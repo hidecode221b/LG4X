@@ -2,9 +2,6 @@
 
 # LG4X: lmfit gui for xps
 
-## Abstract
-A graphical user interface of Python lmfit package was developed for standard X-ray photoemission spectroscopy (XPS) curve fitting analysis. The interface streamlines the fitting procedures for validating results and their consistency.
-
 ## Introduction
 
 LG4X provides a graphical user interface for XPS curve fitting analysis based on the lmfit package, which provides the non-linear least-square minimization method for Python. LG4X facilitates the curve fitting analysis for python beginners. LG4X was developed on Python 3.6 and PyQt5 was used for its graphical interface design. Shirley and Tougaard iterated methods are implemented as a supplementary code for XPS background subtraction. LG4X tidies up all fitting parameters with their bound conditions in tables. Fitting parameters can be imported and exported as a preset file before and after analysis to streamline the fitting procedures. Fitting results are also exported as a text for parameters and csv file for spectral data. In addition, LG4X simulates the curve without importing data and evaluates the initial parameters over the data plot prior to optimization.
