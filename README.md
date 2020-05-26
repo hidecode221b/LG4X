@@ -26,7 +26,7 @@ Update package if necessary
 
 Supplementary code for XPS analysis
 
-xpspy.py should be located at the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods.
+xpspy.py should be located in the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods, which are taken from codes by [kaneod](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
 
 Start LG4X
 > python main.py
@@ -54,6 +54,9 @@ Testing and developing environment
 1. Export results
 
 ## Interface design
+
+![LG4X interface cencept](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-24%20at%2021.24.14.png "GUI")
+
 ### Buttons
 
 #### Importing csv
@@ -117,11 +120,11 @@ All conditions are based on the lmfit [built-in models](https://lmfit.github.io/
 
 ![XPS C1s spectrum](https://github.com/heitler/LG4X/blob/master/Images/Capture.PNG "C1s")
 
-### NEXAFS C K edge spectrum
+![NEXAFS C K edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.45.37.png "C K")
 
-### UPS Fermi-edge spectrum
+![UPS Fermi-edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-21%20at%2020.11.36.png "EF")
 
-
+![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "simulation")
 
 
 
