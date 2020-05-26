@@ -46,12 +46,12 @@ Testing and developing environment
 
 ### Usage
 
-* Import csv data
-* Setup background and peak parameters with their types
-* Evaluate parameters
-* Fit curve
-* Save parameters as a preset for next analysis
-* Export results
+1. Import csv data
+1. Setup background and peak parameters with their types
+1. Evaluate parameters
+1. Fit curve
+1. Save parameters as a preset for next analysis
+1. Export results
 
 ## Interface design
 ### Buttons
