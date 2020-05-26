@@ -13,13 +13,23 @@ LG4X provides a graphical user interface for XPS curve fitting analysis based on
 Download and install [Python 3](https://www.python.org/)
 
 > pip install [lmfit](https://lmfit.github.io/lmfit-py/installation.html)
+
 > pip install pandas
+
 > pip install matplotlib
+
 > pip install PyQt5
 
 
 Update package if necessary
 > pip install --upgrade lmfit
+
+Supplementary code for XPS analysis
+
+xpspy.py should be located at the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods.
+
+Start LG4X
+> python main.py
 
 Testing and developing environment
 
@@ -32,13 +42,6 @@ Testing and developing environment
 * PyQt5==5.14.2
 * scipy==1.4.1
 * uncertainties==3.1.2
-
-Supplementary code for XPS analysis
-
-xpspy.py should be located at the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods.
-
-Start LG4X
-> python main.py
 
 
 ### Usage
