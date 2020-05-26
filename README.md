@@ -112,7 +112,7 @@ All conditions are based on the lmfit [built-in models](https://lmfit.github.io/
 
 ## Examples
 
-### XPS C1s spectrum
+![XPS C1s spectrum](https://github.com/heitler/LG4X/blob/master/Images/Capture.PNG "C1s")
 
 ### NEXAFS C K edge spectrum
 
