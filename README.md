@@ -26,7 +26,7 @@ Update package if necessary
 
 Supplementary code for XPS analysis
 
-xpspy.py should be located in the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods, which are taken from codes by [kaneod](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
+xpspy.py should be located in the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods, which are taken from codes by [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
 
 Start LG4X
 > python main.py
