@@ -86,11 +86,11 @@ Imported file path is added in the list. You can choose the path to import file 
 Fitting condition can be created in the BG and Fit tables. From fitting preset drop-down menu, you can generate the most simple single-peak condition from New. If you have a preset previously saved, you can load a preset file, which will be listed in the fitting preset. Default conditions for XPS C1s and C K edge are also available from the list as examples.
 
 #### Background (BG) types
-You can choose the type of background to be subtracted from the raw data as listed below. Shirley and Tougaard background iteration functions are available from xpypy.py, which should be located with main.py. From lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html), 3rd-order polynomial and 5 step functions are implemented. Fermi-Dirac (ThermalDistributionModel) is used for the Fermi edge fitting, and arctan and error functions (StepModel) for NEXAFS K edge. Polynomial function is added to the other background models configured in the BG table.
+You can choose the type of background to be subtracted from the raw data as listed below. Shirley and Tougaard background iteration functions are available from xpypy.py, which should be located with main.py. From lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html), 3rd-order polynomial and 3 step functions are implemented. Fermi-Dirac (ThermalDistributionModel) is used for the Fermi edge fitting, and arctan and error functions (StepModel) for NEXAFS K edge background. Polynomial function is added to the other background models configured in the BG table, so polynomial parameters have to be taken into account for all background optimization. You can turn off polynomial parameters by filling all zeros with turning on checkbox.
 
 | No. | Background | Parameters |
 | --- | --- | --- |
-| 1 | Shirley BG | Initial, max iteration |
+| 1 | Shirley BG | Initial, max iteration, # of points for simulation |
 | 2 | Tougaard BG | B, C, C', D |
 | 3 | Polynomial BG | c0, c1, c2, c3 |
 | 4 | Fermi-Dirac BG | amplitude, center, kt |
@@ -106,7 +106,7 @@ You can specify the range for fitting region in the first row of BG table. Check
 #### Peak configuration table
 All conditions are based on the lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html) listed in the Fit table. Peak shapes are listed below. For standard XPS analysis, peak differences and amplitude ratios can be setup from their referenced peak from drop-down menu in each column. The number of peaks can be varied with add and rem buttons. Checkbox can be used for either fixing values or bound conditions if you check beside value. Empty cells do not effect to the optimization.
 
-| No. | String | Model | Parameters |
+| No. | String | Peak model | Parameters |
 | --- | --- | --- | --- |
 | 1 | g | GaussianModel | amplitude, center, sigma |
 | 2 | l | LorentzianModel | amplitude, center, sigma |
@@ -126,15 +126,15 @@ Note that amplitude used in the lmfit package is equivalent to the peak area tha
 
 ## Examples
 
-![XPS C1s spectrum](https://github.com/heitler/LG4X/blob/master/Images/Capture.PNG "C1s")
+![XPS C1s spectrum](https://github.com/heitler/LG4X/blob/master/Images/Capture.PNG "XPS C1s spectrum")
 
-![XPS Ag3d spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-27%20at%2023.14.49.png "Ag3d")
+![XPS Ag3d spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-27%20at%2023.14.49.png "XPS Ag3d spectrum")
 
-![NEXAFS C K edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.45.37.png "C K")
+![NEXAFS C K edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.45.37.png "NEXAFS C K edge spectrum")
 
-![UPS Fermi-edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-21%20at%2020.11.36.png "EF")
+![UPS Fermi-edge spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-21%20at%2020.11.36.png "UPS Fermi-edge spectrum")
 
-![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "simulation")
+![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "Simulated spectrum")
 
 
 
