@@ -21,17 +21,19 @@ Download and install [Python 3](https://www.python.org/)
 > pip install PyQt5
 
 
-Update package if necessary
+### Update package if necessary
+
 > pip install --upgrade lmfit
 
-Supplementary code for XPS analysis
+### Supplementary code for XPS analysis
 
 xpspy.py should be located in the same directory as main.py for XPS energy range selection for background subtraction in Shirley and Tougaard methods, which are taken from codes by [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
 
-Start LG4X
+### Start LG4X
+
 > python main.py
 
-Testing and developing environment
+### Testing and developing environment
 
 * Python 3.8.3
 * asteval==0.9.18
@@ -42,7 +44,6 @@ Testing and developing environment
 * PyQt5==5.14.2
 * scipy==1.4.1
 * uncertainties==3.1.2
-
 
 ### Usage
 
@@ -55,12 +56,11 @@ Testing and developing environment
 
 ## Interface design
 
+An initial gui concept is taken from [here](http://songhuiming.github.io/pages/2016/05/31/read-in-csv-and-plot-with-matplotlib-in-pyqt4/) and [there](https://stackoverflow.com/questions/47964897/how-to-graph-from-a-csv-file-using-matpotlib-and-pyqt5).
+
 ![LG4X interface cencept](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-24%20at%2021.24.14.png "GUI")
 
 ### Buttons
-
-#### Importing csv
-LG4X imports csv format or tab separated text files. File should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Imported data is displayed in the figure and listed in the file list.
 
 #### Evaluation
 You can evaluate the fitting parameters without fitting optimization on data spectrum. If you have not imported the data, it works for simulation mode in the range you specify.
@@ -75,6 +75,9 @@ LG4X exports fitting results in two different files. One is a text file for fitt
 You can add and remove peak at the end of column from the Fit table.
 
 ### Drop-down menus
+
+#### Importing data
+LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
 
 #### File list
 Imported file path is added in the list. You can choose the path to import file from the list once you import a data file.
