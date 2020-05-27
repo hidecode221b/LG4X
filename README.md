@@ -4,7 +4,7 @@
 
 ## Introduction
 
-LG4X provides a graphical user interface for XPS curve fitting analysis based on the lmfit package, which provides the non-linear least-square minimization method for Python. LG4X facilitates the curve fitting analysis for python beginners. LG4X was developed on Python 3.6 and PyQt5 was used for its graphical interface design. Shirley and Tougaard iterated methods are implemented as a supplementary code for XPS background subtraction. LG4X tidies up all fitting parameters with their bound conditions in tables. Fitting parameters can be imported and exported as a preset file before and after analysis to streamline the fitting procedures. Fitting results are also exported as a text for parameters and csv file for spectral data. In addition, LG4X simulates the curve without importing data and evaluates the initial parameters over the data plot prior to optimization.
+LG4X provides a graphical user interface for [XPS](https://en.wikipedia.org/wiki/X-ray_photoelectron_spectroscopy) curve fitting analysis based on the [lmfit](https://lmfit.github.io/lmfit-py/installation.html) package, which provides the non-linear least-square minimization method for Python. LG4X facilitates the curve fitting analysis for python beginners. LG4X was developed on [Python 3](https://www.python.org/) and PyQt5 was used for its graphical interface design. Shirley and Tougaard iterated methods are implemented as a supplementary code for XPS background subtraction. LG4X tidies up all fitting parameters with their bound conditions in tables. Fitting parameters can be imported and exported as a preset file before and after analysis to streamline the fitting procedures. Fitting results are also exported as a text for parameters and csv file for spectral data. In addition, LG4X simulates the curve without importing data and evaluates the initial parameters over the data plot prior to optimization.
 
 
 ## Methods
@@ -12,7 +12,7 @@ LG4X provides a graphical user interface for XPS curve fitting analysis based on
 
 Download and install [Python 3](https://www.python.org/)
 
-> pip install [lmfit](https://lmfit.github.io/lmfit-py/installation.html)
+> pip install lmfit
 
 > pip install pandas
 
@@ -120,7 +120,7 @@ All conditions are based on the lmfit [built-in models](https://lmfit.github.io/
 | 10 | d | DoniachModel | amplitude, center, sigma, gamma |
 
 ##### Amplitude ratio and energy difference
-XPS doublet peaks are splitted by the spin-orbit coupling based on the atomic theory. Spin-orbit interaction depends on the atomic element and its orbit. The energy separation of doublet corresponds to the spin-orbit constant. Amplitude ratio of doublet is based on the multiplicity (2j+1) of each total quantum number (j). LG4X constrains amp ratio and energy diff from a reference peak selected by dropdown menus. For example, Ag3d has j=5/2 and 3/2, and their amp ratio corresponds to 3:2. You can setup second peak amp ratio by selecting the first peak at j=5/2 and amp ratio = 0.67. This means that amplitude of second peak at j=3/2 is constrained by a factor of 0.67 against that of first peak. Energy diff parameter also works in a way that second peak position is away from first peak by the ctr diff = 6 eV as shown in the figure below.
+XPS doublet peaks are splitted by the spin-orbit coupling based on the atomic theory. Spin-orbit interaction depends on the atomic element and its orbit. The energy separation of doublet corresponds to the spin-orbit constant. Amplitude ratio of doublet is based on the [multiplicity](https://en.wikipedia.org/wiki/Multiplicity_(chemistry)) (2j+1) of each total angular quantum number (j). LG4X constrains amp ratio and energy diff from a reference peak selected by dropdown menus. For example, Ag3d has j=5/2 and 3/2, and their amp ratio corresponds to 3:2. You can setup second peak amp ratio by selecting the first peak at j=5/2 and amp ratio = 0.67. This means that amplitude of second peak at j=3/2 is constrained by a factor of 0.67 against that of first peak. Energy diff parameter also works in a way that second peak position is away from first peak by the ctr diff = 6 eV as shown in the figure below.
 
 Note that amplitude used in the lmfit package is equivalent to the peak area that is propoertional to the amount of element in analytical area and depth by XPS. The atomic ratio is evaluated by the peak area normalized by the sensitivity factor. The ratio of sensitivity factors on doublet peaks is the same as that in multiplicity, so the normalized peak area of one doublet peak is the same as that in other one.
 
