@@ -1,4 +1,4 @@
-# hideki nakajima, LG4X version 0.02
+# hideki nakajima, LG4X version 0.03
 
 from PyQt5 import QtWidgets,QtCore
 import sys, os
@@ -196,8 +196,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					self.fitp1.setItem(row+1, col*2, item)
 	
 		# load default preset
-		#pre_pk = [[0,0],[2,0],[2,0],[2,0],[2,0],[2,0]]
-		pre_pk = [[0,0],[2,284.6],[2,0.85],[2,0.85],[0,20000],[2,0.5]]
+		#pre_pk = [[0,0],[2,0],[2,0],[2,0],[2,0],[2,0],[2,0],[2,0]]
+		pre_pk = [[0,0],[2,284.6],[2,0.85],[2,0.85],[0,20000],[2,0.5],[2,0],[2,0]]
 		self.setPreset(0, [], pre_pk)
 
 		self.fitp1.resizeColumnsToContents()
@@ -1006,6 +1006,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				if self.fitp1.cellWidget(8, 2*index_pk+1).currentIndex() > 0:
 					pktar = self.fitp1.cellWidget(8, 2*index_pk+1).currentIndex()
 					strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
+					strtar = strtar[0]
 					if self.fitp1.item(9, 2*index_pk+1) != None:
 						if len(self.fitp1.item(9, 2*index_pk+1).text()) > 0:
 							rtotar = float(self.fitp1.item(9, 2*index_pk+1).text())
@@ -1015,6 +1016,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				if self.fitp1.cellWidget(10, 2*index_pk+1).currentIndex() > 0:
 					pktar = self.fitp1.cellWidget(10, 2*index_pk+1).currentIndex()
 					strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
+					strtar = strtar[0]
 					if self.fitp1.item(11, 2*index_pk+1) != None:
 						if len(self.fitp1.item(11, 2*index_pk+1).text()) > 0:
 							diftar = float(self.fitp1.item(11, 2*index_pk+1).text())
