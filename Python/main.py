@@ -1,4 +1,4 @@
-# hideki nakajima, LG4X
+# hideki nakajima, LG4X version 0.02
 
 from PyQt5 import QtWidgets,QtCore
 import sys, os
@@ -37,15 +37,11 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.setCentralWidget(widget)
 		widget.setLayout(grid)
 		
-		#nameLabel = QtWidgets.QLabel()
-		#nameLabel.setText('')
-		#grid.addWidget(nameLabel, 0, 0, 1, 2)
-		
 		# Import CSV Button
-		btn_imp = QtWidgets.QPushButton('Import CSV', self)
-		btn_imp.resize(btn_imp.sizeHint())
-		btn_imp.clicked.connect(self.getCSV)
-		grid.addWidget(btn_imp, 0, 0, 1, 1)
+		#btn_imp = QtWidgets.QPushButton('Import CSV', self)
+		#btn_imp.resize(btn_imp.sizeHint())
+		#btn_imp.clicked.connect(self.getCSV)
+		#grid.addWidget(btn_imp, 0, 0, 1, 1)
 		
 		# Home directory
 		#self.filePath = QtCore.QDir.homePath()
@@ -62,25 +58,29 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		grid.addWidget(self.canvas, 4,0,1,3)
 		grid.addWidget(self.toolbar, 3,0,1,3)
 		
-		# DropDown file list
+		# data template
 		#self.df = pd.DataFrame()
 		self.df = []
+		self.result = pd.DataFrame()
+
+		# lists of dropdown menus
+		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Open directory']
 		self.list_file = ['File list']
-		#self.list_atm = []
 		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG']
 		self.list_preset = ['Fitting preset', 'New', 'Load', 'Save', 'C1s', 'C K edge']
-		self.result = pd.DataFrame()
+
+		# DropDown file import
+		self.comboBox_imp = QtWidgets.QComboBox(self)
+		self.comboBox_imp.addItems(self.list_imp)
+		grid.addWidget(self.comboBox_imp, 0, 0, 1, 1)
+		self.comboBox_imp.currentIndexChanged.connect(self.imp)
+		self.comboBox_imp.setCurrentIndex(0)
 		
+		# DropDown file list
 		self.comboBox_file = QtWidgets.QComboBox(self)
 		self.comboBox_file.addItems(self.list_file)
 		grid.addWidget(self.comboBox_file, 1, 0, 1, 2)
 		self.comboBox_file.currentIndexChanged.connect(self.plot)
-		
-		##DropDown atm list
-		#self.comboBox1 = QtWidgets.QComboBox(self)
-		#self.comboBox1.addItems(self.list_atm)
-		#grid.addWidget(self.comboBox1, 1, 2, 1, 1)
-		#self.comboBox1.setCurrentIndex(0)
 		
 		# DropDown BG list
 		self.comboBox_bg = QtWidgets.QComboBox(self)
@@ -207,9 +207,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.show()
 		
 	
-	def opt(self):
-		print('option')
-	
 	def add_col(self):
 		rowPosition = self.fitp1.rowCount()
 		colPosition = self.fitp1.columnCount()
@@ -284,7 +281,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.fitp1.setHorizontalHeaderItem(colPosition+1, item)
 		self.fitp1.resizeColumnsToContents()
 		#self.fitp1.setColumnWidth(1, 55)
-
 
 
 	def rem_col(self):
@@ -506,7 +502,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			fileName = 'sample_pars'
 
 		# S_File will get the directory path and extension.
-		cfilePath,_ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Preset file', cfilePath+'/'+fileName+'.dat', "DAT Files (*.dat)")
+		cfilePath,_ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Preset file', cfilePath+os.sep+fileName+'.dat', "DAT Files (*.dat)")
 		if cfilePath != "": 
 			self.filePath = cfilePath
 			Text = 'LG4X parameters\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[BG type]]\n\n' + str(self.comboBox_bg.currentIndex()) + '\n\n[[BG parameters]]\n\n' + str(list_pre_bg) + '\n\n[[Peak parameters]]\n\n' + str(list_pre_pk)
@@ -534,7 +530,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				fileName = 'sample'
 	
 			# S_File will get the directory path and extension.
-			cfilePath,_  = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Fit file', cfilePath+'/'+fileName+'_fit.txt', "Text Files (*.txt)")
+			cfilePath,_  = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Fit file', cfilePath+os.sep+fileName+'_fit.txt', "Text Files (*.txt)")
 			if cfilePath != "":
 				self.filePath = cfilePath
 				Text = 'LG4X exported results\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[Constraints]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report) 
@@ -543,9 +539,38 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				file.close
 				#print(filePath)
 				filePath1 = os.path.dirname(cfilePath)
-				self.result.to_csv(filePath1+'/'+fileName+'_fit.csv', index = False)
+				self.result.to_csv(filePath1+os.sep+fileName+'_fit.csv', index = False)
 				#print(self.result)
 
+
+	def imp(self):
+		index = self.comboBox_imp.currentIndex()
+		if index == 1 or index == 2:
+			if index == 1:
+				cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open csv file', self.filePath, 'CSV Files (*.csv)')
+			else:
+				cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open tab-separated text file', self.filePath, 'TXT Files (*.txt)')
+			if cfilePath != "":
+				print (cfilePath)
+				self.filePath = cfilePath
+				self.list_file.append(str(cfilePath))
+				self.comboBox_file.clear()
+				self.comboBox_file.addItems(self.list_file)
+				index = self.comboBox_file.findText(str(cfilePath), QtCore.Qt.MatchFixedString)
+				if index >= 0:
+					self.comboBox_file.setCurrentIndex(index)
+				self.plot
+		if index == 3:
+			dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Open Directory", self.filePath, QtWidgets.QFileDialog.ShowDirsOnly)
+			if dir != "":
+				entries = os.listdir(dir)
+				entries.sort()
+				for entry in entries:
+					if os.path.splitext(entry)[1] == '.csv' or os.path.splitext(entry)[1] == '.txt':
+						self.list_file.append(str(dir + os.sep + entry))
+				self.comboBox_file.clear()
+				self.comboBox_file.addItems(self.list_file)
+		self.comboBox_imp.setCurrentIndex(0)
 
 	def getCSV(self):
 		cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open data file', self.filePath, 'CSV Files (*.csv *.txt)')
