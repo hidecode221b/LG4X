@@ -1,4 +1,5 @@
-# hideki nakajima, LG4X version 0.03
+# hideki nakajima, LG4X version 0.04
+# floating point .2f rounding
 
 from PyQt5 import QtWidgets,QtCore
 import sys, os
@@ -37,15 +38,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.setCentralWidget(widget)
 		widget.setLayout(grid)
 		
-		# Import CSV Button
-		#btn_imp = QtWidgets.QPushButton('Import CSV', self)
-		#btn_imp.resize(btn_imp.sizeHint())
-		#btn_imp.clicked.connect(self.getCSV)
-		#grid.addWidget(btn_imp, 0, 0, 1, 1)
-		
 		# Home directory
-		#self.filePath = QtCore.QDir.homePath()
-		self.filePath = '/Users/hidekinakajima/Desktop/W@home/Python/'
+		self.filePath = QtCore.QDir.homePath()
+		#self.filePath = '/Users/hidekinakajima/Desktop/W@home/Python/'
 		
 		# Figure: Canvas and Toolbar
 		#self.figure = plt.figure(figsize=(6.7,5))
@@ -334,6 +329,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				self.setPreset(self.pre[0], self.pre[1], self.pre[2])
 		if index == 3:
 			self.savePreset()
+			self.savePresetDia()
 		if index == 4:
 			# load C1s peak preset
 			pre_bg = [[2,295,2,275,'','','','','',''],['cv',1e-06,'it',10,'','','','','',''],['B',2866,'C',1643,'C*',1.0,'D',1.0,'',''],[2,0,2,0,2,0,2,0,'','']]
@@ -492,7 +488,15 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						else:
 							new.append(self.fitp1.item(row, col).text())
 			list_pre_pk.append(new)
-
+			
+		self.parText = 'LG4X parameters\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[BG type]]\n\n' + str(self.comboBox_bg.currentIndex()) + '\n\n[[BG parameters]]\n\n' + str(list_pre_bg) + '\n\n[[Peak parameters]]\n\n' + str(list_pre_pk)
+		#print(Text)
+		self.parText = [self.comboBox_bg.currentIndex()]
+		self.parText.append(list_pre_bg)
+		self.parText.append(list_pre_pk)
+		
+		
+	def savePresetDia(self):
 		if self.comboBox_file.currentIndex() > 0:
 			cfilePath = os.path.dirname(str(self.comboBox_file.currentText()))
 			fileName = os.path.basename(str(self.comboBox_file.currentText()))
@@ -505,14 +509,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		cfilePath,_ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Preset file', cfilePath+os.sep+fileName+'.dat', "DAT Files (*.dat)")
 		if cfilePath != "": 
 			self.filePath = cfilePath
-			Text = 'LG4X parameters\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[BG type]]\n\n' + str(self.comboBox_bg.currentIndex()) + '\n\n[[BG parameters]]\n\n' + str(list_pre_bg) + '\n\n[[Peak parameters]]\n\n' + str(list_pre_pk)
-			#print(Text)
-			Text = [self.comboBox_bg.currentIndex()]
-			Text.append(list_pre_bg)
-			Text.append(list_pre_pk)
 			# Finally this will Save your file to the path selected.
 			with open(cfilePath, 'w') as file:
-				file.write(str(Text))
+				file.write(str(self.parText))
 			file.close
 
 
@@ -533,7 +532,57 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			cfilePath,_  = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Fit file', cfilePath+os.sep+fileName+'_fit.txt', "Text Files (*.txt)")
 			if cfilePath != "":
 				self.filePath = cfilePath
-				Text = 'LG4X exported results\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[Constraints]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report) 
+				if self.comboBox_file.currentIndex() == 0:
+					strmode = 'simulation mode'
+				else:
+					strmode = self.comboBox_file.currentText()
+				Text = 'LG4X exported results\n\n[[Data file]]\n\n' + strmode + '\n\n[[Fit results]]\n\n'
+				
+				# fit results to be checked
+				#for key in self.export_out.params:
+					#Text += str(key) + "\t" + str(self.export_out.params[key].value) + '\n'
+				indpk =0
+				indpar = 0
+				strpk =''
+				strpar =''
+				npeak = self.fitp1.columnCount()
+				npeak = int(npeak/2)
+				pk_name = np.array([None] * int(npeak), dtype = 'U')
+				par_name = ['amplitude','center','sigma','gamma','fwhm','height','fraction','skew','q']
+				par_list = np.array([[None]*9] * int(npeak), dtype='f')
+				for key in self.export_out.params:
+					if str(key)[1] == 'g':
+						Text += str(key) + "\t" + str(self.export_out.params[key].value) + '\n'
+					else:
+						if len(strpk) > 0:
+							if str(key)[:2] == strpk:
+								strpar = str(key)[3:]
+								for indpar in range(len(par_name)):
+									if strpar == par_name[indpar]:
+										par_list[indpk][indpar] = str(self.export_out.params[key].value)
+										strpk = str(key)[:2]
+							else:
+								indpk += 1
+								indpar = 0
+								par_list[indpk][indpar] = str(self.export_out.params[key].value)
+								strpk = str(key)[:2]
+								pk_name[indpk] =  str(key)[:2]
+						else:
+							par_list[indpk][indpar] = str(self.export_out.params[key].value)
+							strpk = str(key)[:2]
+							pk_name[indpk] =  str(key)[:2]
+							
+				Text += '\n'
+				for indpk in range(npeak):
+					Text += '\t' + pk_name[indpk]
+				for indpar in range(9):
+					Text += '\n' + par_name[indpar] + '\t'
+					for indpk in range(npeak):
+						Text += str(par_list[indpk][indpar]) + '\t'
+						
+				self.savePreset()
+				Text += '\n\n[[LG4X parameters]]\n\n' + str(self.parText) + '\n\n[[lmfit parameters]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report) 
+
 				with open(cfilePath, 'w') as file:
 					file.write(str(Text))
 				file.close
@@ -551,7 +600,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			else:
 				cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open tab-separated text file', self.filePath, 'TXT Files (*.txt)')
 			if cfilePath != "":
-				print (cfilePath)
+				#print (cfilePath)
 				self.filePath = cfilePath
 				self.list_file.append(str(cfilePath))
 				self.comboBox_file.clear()
@@ -599,10 +648,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			x0 = self.df[:,0]
 			y0 = self.df[:,1]
 
-			#plt.clf()
-			#plt.cla()
-			self.ar.cla()
-			self.ax.cla()
+			plt.cla()
+			#self.ar.cla()
+			#self.ax.cla()
 			#ax = self.figure.add_subplot(221)
 			self.ax.plot(x0, y0, 'o', color="b", label="raw")
 			if x0[0] > x0[-1]:
@@ -623,9 +671,11 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			item = QtWidgets.QTableWidgetItem(str(x0[len(x0)-1]))
 			self.fitp0.setItem(0, 3, item)
 			#print(str(plt.get_fignums()))
-
-			# macOS compatibility issue on pyqt5, add below to update window
-			self.repaint()
+		if self.comboBox_file.currentIndex() == 0 and self.comboBox_file.count() > 1:
+			plt.cla()
+			self.canvas.draw()
+		# macOS compatibility issue on pyqt5, add below to update window
+		self.repaint()
 
 	def eva(self):
 		# simulation mode if no data in file list, otherwise evaluation mode
@@ -676,8 +726,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				self.ax.plot(x0, y0, 'o', mfc='none', color='b', label='raw')
 
 		if x0[0] > x0[-1]:
-			#self.ar.invert_xaxis()
-			#self.ax.invert_xaxis()
 			self.ax.set_xlabel('Binding energy (eV)', fontsize=11)
 		else:
 			self.ax.set_xlabel('Energy (eV)', fontsize=11)
@@ -686,7 +734,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.ax.set_ylabel('Intensity (arb. unit)', fontsize=11)
 		self.ar.set_title(self.comboBox_file.currentText(), fontsize=11)
 		
-		# fit range
+		# fit or simulation range
 		if self.fitp0.item(0, 0).checkState() == 2:
 			x1 = float(self.fitp0.item(0, 1).text()) 
 		else:
@@ -719,7 +767,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			item = QtWidgets.QTableWidgetItem(str(format(bg_toB, '.2f')))
 			self.fitp0.setItem(index_bg+1, 1, item)
 			y = y - bg_mod
-		#if index_bg == 2:
 		if index_bg == 3:
 			mod = ThermalDistributionModel(prefix='bg_', form='fermi')
 			if self.fitp0.item(index_bg+1, 1) == None or self.fitp0.item(index_bg+1, 3) == None or self.fitp0.item(index_bg+1, 5) == None:
@@ -805,7 +852,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						pars['pg_c'+str(index)].value = float(self.fitp0.item(3, 2*index+1).text())
 			mod += modp
 
-
 		# peak model selection and construction
 		npeak = self.fitp1.columnCount()
 		npeak = int(npeak/2)
@@ -836,11 +882,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				pk_mod = LognormalModel(prefix=strind + str(index_pk+1) + '_')
 			if index == 9:
 				pk_mod = DoniachModel(prefix=strind + str(index_pk+1) + '_')
-
-			#if index_pk == 0 and index_bg <= 1:
-				#pars = pk_mod.make_params()
-			#else:
-				#pars.update(pk_mod.make_params())
 
 			pars.update(pk_mod.make_params())
 
@@ -876,16 +917,10 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						pars[strind + str(index_pk+1) +	'_q'].value = float(self.fitp1.item(7, 2*index_pk+1).text())
 
 			 # sum of models
-			#if index_pk == 0 and index_bg < 2:
-				#mod = pk_mod
-			#else:
-				#mod += pk_mod
-
 			mod += pk_mod
 
 		if mode == 'eva':
 			# constraints of BG parameters (checkbox to hold)
-			#if index_bg == 2:
 			for index in range(4):
 				pars['pg_c' + str(index)].vary = False
 			if index_bg == 3:
@@ -918,7 +953,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					pars[strind + str(index_pk+1) + '_q'].vary = False
 		else:
 			# constraints of BG parameters (checkbox to hold)
-			#if index_bg == 2:
 			for index in range(4):
 				if self.fitp0.item(3, 2*index).checkState() == 2:
 					if len(self.fitp0.item(3, 2*index+1).text()) > 0:
@@ -1040,7 +1074,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.statusBar().showMessage(results)
 
 		# BG results into table
-		#if index_bg == 2:
 		for index in range(4):
 			item = QtWidgets.QTableWidgetItem(str(format(out.params['pg_c' + str(index)].value, '.2f')))
 			self.fitp0.setItem(3, 2*index+1, item)
