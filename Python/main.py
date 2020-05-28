@@ -556,22 +556,22 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						Text += str(key) + "\t" + str(self.export_out.params[key].value) + '\n'
 					else:
 						if len(strpk) > 0:
-							if str(key)[:2] == strpk:
-								strpar = str(key)[3:]
+							if str(key)[:int(str(key).find('_'))] == strpk:
+								strpar = str(key)[int(str(key).find('_'))+1:]
 								for indpar in range(len(par_name)):
 									if strpar == par_name[indpar]:
 										par_list[indpk][indpar] = str(self.export_out.params[key].value)
-										strpk = str(key)[:2]
+										strpk = str(key)[:int(str(key).find('_'))]
 							else:
 								indpk += 1
 								indpar = 0
 								par_list[indpk][indpar] = str(self.export_out.params[key].value)
-								strpk = str(key)[:2]
-								pk_name[indpk] =  str(key)[:2]
+								strpk = str(key)[:int(str(key).find('_'))]
+								pk_name[indpk] =  strpk
 						else:
 							par_list[indpk][indpar] = str(self.export_out.params[key].value)
-							strpk = str(key)[:2]
-							pk_name[indpk] =  str(key)[:2]
+							strpk = str(key)[:int(str(key).find('_'))]
+							pk_name[indpk] =  strpk
 							
 				Text += '\n'
 				for indpk in range(npeak):
@@ -622,18 +622,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				self.comboBox_file.addItems(self.list_file)
 		self.comboBox_imp.setCurrentIndex(0)
 
-	def getCSV(self):
-		cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open data file', self.filePath, 'CSV Files (*.csv *.txt)')
-		if cfilePath != "":
-			print (cfilePath)
-			self.filePath = cfilePath
-			self.list_file.append(str(cfilePath))
-			self.comboBox_file.clear()
-			self.comboBox_file.addItems(self.list_file)
-			index = self.comboBox_file.findText(str(cfilePath), QtCore.Qt.MatchFixedString)
-			if index >= 0:
-				self.comboBox_file.setCurrentIndex(index)
-			self.plot
 
 	def plot(self):
 		if self.comboBox_file.currentIndex() > 0:
@@ -672,6 +660,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			item = QtWidgets.QTableWidgetItem(str(x0[len(x0)-1]))
 			self.fitp0.setItem(0, 3, item)
 			#print(str(plt.get_fignums()))
+		# select file list index ==0 to clear figure for simulation
 		if self.comboBox_file.currentIndex() == 0 and self.comboBox_file.count() > 1:
 			#plt.cla()
 			self.ar.cla()
@@ -1157,6 +1146,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.ar.legend(loc = 0)
 		self.canvas.draw()
 		
+		# make fit results to be global to export
 		self.export_pars = pars
 		self.export_out = out
 		# make dataFrame and concat to export
