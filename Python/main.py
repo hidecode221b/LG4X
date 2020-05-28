@@ -1,5 +1,4 @@
-# hideki nakajima, LG4X version 0.04
-# floating point .2f rounding
+# LG4X: lmfit gui for xps curve fitting, Copyright (C) 2020, Hideki NAKAJIMA, Synchrotron Light Research Institute, Thailand
 
 from PyQt5 import QtWidgets,QtCore
 import sys, os
@@ -24,9 +23,11 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.05'
+		self.floating = '.2f'
 		self.setGeometry(600,300, 1100, 700)
 		self.center()
-		self.setWindowTitle('LG4X: lmfit gui for xps curve fitting')     
+		self.setWindowTitle(self.version)     
 		self.statusBar().showMessage('Copyright (C) 2020, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
 		
 		# Grid Layout
@@ -224,7 +225,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				add_fac = 0
 			if self.fitp1.item(row+1, colPosition-1) != None and row != 7 and row != 9:
 				if len(self.fitp1.item(row+1, colPosition-1).text()) > 0:
-					item = QtWidgets.QTableWidgetItem(str(format(float(self.fitp1.item(row+1, colPosition-1).text()) + add_fac, '.2f')))
+					item = QtWidgets.QTableWidgetItem(str(format(float(self.fitp1.item(row+1, colPosition-1).text()) + add_fac, self.floating)))
 					self.fitp1.setItem(row+1, colPosition+1, item)
 		
 		# add DropDown peak selection for amp_ref and ctr_ref and keep values as it is
@@ -403,7 +404,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						if str(list_pre_pk[row][col]) == '':
 							item = QtWidgets.QTableWidgetItem('')
 						else:
-							item = QtWidgets.QTableWidgetItem(str(format(list_pre_pk[row][col], '.2f')))
+							item = QtWidgets.QTableWidgetItem(str(format(list_pre_pk[row][col], self.floating)))
 						self.fitp1.setItem(row, col, item)
 				else:
 					if row != 0 and row != 8 and row != 9 and row != 10 and row != 11:
@@ -489,7 +490,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 							new.append(self.fitp1.item(row, col).text())
 			list_pre_pk.append(new)
 			
-		self.parText = 'LG4X parameters\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[BG type]]\n\n' + str(self.comboBox_bg.currentIndex()) + '\n\n[[BG parameters]]\n\n' + str(list_pre_bg) + '\n\n[[Peak parameters]]\n\n' + str(list_pre_pk)
+		#self.parText = self.version + 'parameters\n\n[[Data file]]\n\n' + self.comboBox_file.currentText() + '\n\n[[BG type]]\n\n' + str(self.comboBox_bg.currentIndex()) + '\n\n[[BG parameters]]\n\n' + str(list_pre_bg) + '\n\n[[Peak parameters]]\n\n' + str(list_pre_pk)
 		#print(Text)
 		self.parText = [self.comboBox_bg.currentIndex()]
 		self.parText.append(list_pre_bg)
@@ -536,7 +537,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					strmode = 'simulation mode'
 				else:
 					strmode = self.comboBox_file.currentText()
-				Text = 'LG4X exported results\n\n[[Data file]]\n\n' + strmode + '\n\n[[Fit results]]\n\n'
+				Text = self.version + '\n\n[[Data file]]\n\n' + strmode + '\n\n[[Fit results]]\n\n'
 				
 				# fit results to be checked
 				#for key in self.export_out.params:
@@ -648,9 +649,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			x0 = self.df[:,0]
 			y0 = self.df[:,1]
 
-			plt.cla()
-			#self.ar.cla()
-			#self.ax.cla()
+			#plt.cla()
+			self.ar.cla()
+			self.ax.cla()
 			#ax = self.figure.add_subplot(221)
 			self.ax.plot(x0, y0, 'o', color="b", label="raw")
 			if x0[0] > x0[-1]:
@@ -672,7 +673,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.fitp0.setItem(0, 3, item)
 			#print(str(plt.get_fignums()))
 		if self.comboBox_file.currentIndex() == 0 and self.comboBox_file.count() > 1:
-			plt.cla()
+			#plt.cla()
+			self.ar.cla()
+			self.ax.cla()
 			self.canvas.draw()
 		# macOS compatibility issue on pyqt5, add below to update window
 		self.repaint()
@@ -764,7 +767,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			else:
 				toM = 1
 			[bg_mod, bg_toB] = xpy.tougaard_calculate(x, y, toB, toC, toCd, toD, toM)
-			item = QtWidgets.QTableWidgetItem(str(format(bg_toB, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(bg_toB, self.floating)))
 			self.fitp0.setItem(index_bg+1, 1, item)
 			y = y - bg_mod
 		if index_bg == 3:
@@ -1070,26 +1073,26 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			strmode = 'Evalution'
 		else:
 			strmode = 'Fitting'
-		results = strmode + ' done: ' + out.method + ', # data: ' + str(out.ndata) + ', # func evals: ' + str(out.nfev) + ', # varys: ' + str(out.nvarys) + ', r chi-sqr: ' + str(format(out.redchi, '.2f')) + ', Akaike info crit: ' + str(format(out.aic, '.2f'))
+		results = strmode + ' done: ' + out.method + ', # data: ' + str(out.ndata) + ', # func evals: ' + str(out.nfev) + ', # varys: ' + str(out.nvarys) + ', r chi-sqr: ' + str(format(out.redchi, self.floating)) + ', Akaike info crit: ' + str(format(out.aic, self.floating))
 		self.statusBar().showMessage(results)
 
 		# BG results into table
 		for index in range(4):
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['pg_c' + str(index)].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['pg_c' + str(index)].value, self.floating)))
 			self.fitp0.setItem(3, 2*index+1, item)
 		if index_bg == 3:
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_amplitude'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_amplitude'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 1, item)
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_center'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_center'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 3, item)
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_kt'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_kt'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 5, item)
 		if index_bg == 4 or index_bg == 5:
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_amplitude'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_amplitude'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 1, item)
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_center'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_center'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 3, item)
-			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_sigma'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_sigma'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 5, item)
 
 		# Peak results into table
@@ -1098,26 +1101,26 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			strind = self.fitp1.cellWidget(0, 2*index_pk+1).currentText()
 			strind = strind[0]
 
-			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_center'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_center'].value, self.floating)))
 			self.fitp1.setItem(1, 2*index_pk+1, item)
-			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_sigma'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_sigma'].value, self.floating)))
 			self.fitp1.setItem(2, 2*index_pk+1, item)
 
 			if index == 2 or index == 4 or index == 5 or index == 6 or index == 9:
-				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_gamma'].value, '.2f')))
+				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_gamma'].value, self.floating)))
 				self.fitp1.setItem(3, 2*index_pk+1, item)
 
-			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_amplitude'].value, '.2f')))
+			item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_amplitude'].value, self.floating)))
 			self.fitp1.setItem(4, 2*index_pk+1, item)
 
 			if index == 3:
-				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_fraction'].value, '.2f')))
+				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_fraction'].value, self.floating)))
 				self.fitp1.setItem(5, 2*index_pk+1, item)
 			if index == 6:
-				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_skew'].value, '.2f')))
+				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_skew'].value, self.floating)))
 				self.fitp1.setItem(6, 2*index_pk+1, item)
 			if index == 7:
-				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_q'].value, '.2f')))
+				item = QtWidgets.QTableWidgetItem(str(format(out.params[strind + str(index_pk+1) + '_q'].value, self.floating)))
 				self.fitp1.setItem(7, 2*index_pk+1, item)
 
 		if mode == 'eva':
