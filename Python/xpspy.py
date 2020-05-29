@@ -150,12 +150,12 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd = 1, td=1, maxit=100):
 	# Sanity check: Do we actually have data to process here?
 	if not (any(x) and any(y)):
 		print("One of the arrays x or y is empty. Returning zero background.")
-		return x * 0
+		return [x * 0, tb]
 
-	# KE
+	# KE in XPS or PE in XAS
 	if x[0] < x[-1]:
 		is_reversed = True
-	# BE
+	# BE in XPS
 	else:
 		is_reversed = False
 
@@ -167,14 +167,14 @@ def tougaard_calculate(x, y, tb=2866, tc=1643, tcd = 1, td=1, maxit=100):
 			for i in range(len(y)-1, -1, -1):
 				Bint = 0
 				for j in range(len(y)-1, i-1, -1):
-					Bint +=  (y[j] - y[len(y)-1]) * (x[0] - x[1]) * (x[i] - x[j]) / ((tc + tcd * (x[i] - x[j])**2)**2 + td * (x[i] - x[j])**2)
+					Bint += (y[j] - y[len(y)-1]) * (x[0] - x[1]) * (x[i] - x[j]) / ((tc + tcd * (x[i] - x[j])**2)**2 + td * (x[i] - x[j])**2)
 				Btou[i] = Bint * tb
 
 		else:
 			for i in range(len(y)-1, -1, -1):
 				Bint = 0
 				for j in range(len(y)-1, i-1, -1):
-					Bint +=  (y[j] - y[len(y)-1]) * (x[1] - x[0]) * (x[j] - x[i]) / ((tc + tcd * (x[j] - x[i])**2)**2 + td * (x[j] - x[i])**2)
+					Bint += (y[j] - y[len(y)-1]) * (x[1] - x[0]) * (x[j] - x[i]) / ((tc + tcd * (x[j] - x[i])**2)**2 + td * (x[j] - x[i])**2)
 				Btou[i] = Bint * tb
 
 		Boffset = Btou[0] - (y[0] - y[len(y)-1])
