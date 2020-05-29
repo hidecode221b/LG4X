@@ -1,6 +1,6 @@
 
 
-# LG4X: lmfit gui for xps
+# LG4X: lmfit GUI for XPS
 
 ## Introduction
 
