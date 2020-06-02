@@ -89,7 +89,7 @@ You can add and remove peak at the end of column from the Fit table.
 ### Drop-down menus
 
 #### Importing data
-LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
+LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
 
 #### File list
 Imported file path is added in the list. You can choose the path to import a data file again from the list once you import the data file.
