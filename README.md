@@ -49,6 +49,7 @@ Download and install [Python 3](https://www.python.org/)
 1. Import data
     - Import csv or text file format.
     - All csv and text files in a directory.
+    - Choose data from file list if it was already imported.
 1. Setup background and peak parameters with their types
     - Select energy range of spectrum for optimization.
     - Setup initial BG parameters including polynomial coefficients.
@@ -59,10 +60,11 @@ Download and install [Python 3](https://www.python.org/)
     - Plot the curves without optimization.
     - Simulate the curves if no data file is selected.
 1. Fit curve
-1. Save parameters as a preset for next analysis
+    - Adjust parameters and bounds until they become converged
 1. Export results
     - Export csv file for curves
     - Export text file for parameters
+    - Save parameters as a preset for next analysis
 
 ## Interface design
 
