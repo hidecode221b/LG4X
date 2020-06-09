@@ -582,7 +582,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						Text += str(par_list[indpk][indpar]) + '\t'
 						
 				self.savePreset()
-				Text += '\n\n[[LG4X parameters]]\n\n' + str(self.parText) + '\n\n[[lmfit parameters]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report) 
+				Text += '\n\n[[LG4X parameters]]\n\n' + str(self.parText) + '\n\n[[lmfit parameters]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report(min_correl=0.25)) 
 
 				with open(cfilePath, 'w') as file:
 					file.write(str(Text))
