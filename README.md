@@ -142,6 +142,13 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 > ["X-ray photoelectron spectroscopy: Towards reliable binding energy referencing" G. Greczynski and L. Hultman, Progress in Materials Science 107, 100591 (2020).](https://doi.org/10.1016/j.pmatsci.2019.100591)
 
+
+
+## Citation program
+
+[https://doi.org/10.5281/zenodo.3901524](https://doi.org/10.5281/zenodo.3901524)
+
+
 ## Examples
 
 ![XPS C1s spectrum](https://github.com/heitler/LG4X/blob/master/Images/Capture.PNG "XPS C1s spectrum")
@@ -154,10 +161,6 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 ![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "Simulated spectrum")
 
-
-## Citation program
-
-[https://doi.org/10.5281/zenodo.3901524](https://doi.org/10.5281/zenodo.3901524)
 
 
 
