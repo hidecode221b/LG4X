@@ -11,6 +11,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from lmfit.models import GaussianModel, LorentzianModel, VoigtModel, PseudoVoigtModel, ThermalDistributionModel, PolynomialModel, StepModel
 from lmfit.models import ExponentialGaussianModel, SkewedGaussianModel, SkewedVoigtModel, DoniachModel, BreitWignerModel, LognormalModel
+from lmfit import Model
 import xpspy as xpy
 
 #style.use('ggplot')
@@ -23,7 +24,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.05'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.060'
 		self.floating = '.2f'
 		self.setGeometry(600,300, 1100, 700)
 		self.center()
@@ -62,7 +63,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		# lists of dropdown menus
 		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Open directory']
 		self.list_file = ['File list']
-		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG']
+		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG', 'VBM/Cutoff']
 		self.list_preset = ['Fitting preset', 'New', 'Load', 'Save', 'C1s', 'C K edge']
 
 		# DropDown file import
@@ -123,7 +124,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		
 		# PolyBG Table
 		list_bg_col = ['bg_c0', 'bg_c1', 'bg_c2', 'bg_c3', 'bg_c4']
-		list_bg_row = ['Range', 'Shirley', 'Tougaard', 'Polynomial', 'FD (amp, ctr, kt)', 'arctan (amp, ctr, sig)', 'erf (amp, ctr, sig)']
+		list_bg_row = ['Range', 'Shirley', 'Tougaard', 'Polynomial', 'FD (amp, ctr, kt)', 'arctan (amp, ctr, sig)', 'erf (amp, ctr, sig)', 'cutoff (ctr, d1-4)']
 		self.fitp0 = QtWidgets.QTableWidget(len(list_bg_row),len(list_bg_col)*2)
 		list_bg_colh = ['', 'bg_c0', '', 'bg_c1', '', 'bg_c2', '', 'bg_c3', '', 'bg_c4']
 		self.fitp0.setHorizontalHeaderLabels(list_bg_colh)
@@ -135,7 +136,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				item = QtWidgets.QTableWidgetItem()
 				item.setFlags(QtCore.Qt.ItemIsUserCheckable |	QtCore.Qt.ItemIsEnabled)
 				item.setCheckState(QtCore.Qt.Unchecked)
-				if (row == 0 and col < 2) or (row > 2 and col < 4):
+				if (row == 0 and col < 2) or (row > 2 and col < 4) or (row > 6 and col < 5):
 					self.fitp0.setItem(row, col*2, item)
 
 		# set BG table default
@@ -582,7 +583,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						Text += str(par_list[indpk][indpar]) + '\t'
 						
 				self.savePreset()
-				Text += '\n\n[[LG4X parameters]]\n\n' + str(self.parText) + '\n\n[[lmfit parameters]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report(min_correl=0.25)) 
+				Text += '\n\n[[LG4X parameters]]\n\n' + str(self.parText) + '\n\n[[lmfit parameters]]\n\n' + str(self.export_pars)+ '\n\n' + str(self.export_out.fit_report(min_correl=0.1)) 
 
 				with open(cfilePath, 'w') as file:
 					file.write(str(Text))
@@ -788,6 +789,38 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					pars['bg_center'].value = float(self.fitp0.item(index_bg+1, 3).text())
 					pars['bg_sigma'].value = float(self.fitp0.item(index_bg+1, 5).text())
 			bg_mod = 0
+		if index_bg == 6:
+			if (x[0] > x[-1] and y[0] > y[-1]) or (x[0] < x[-1] and y[0] < y[-1]):
+				# VBM
+				def poly2vbm(x, ctr, d1, d2, d3, d4):
+					return (d1*(x - ctr) + d2*(x - ctr)**2 + d3*(x - ctr)**3 + d4*(x - ctr)**4)*(x >= ctr)
+			else:
+				#cutoff/wf
+				def poly2vbm(x, ctr, d1, d2, d3, d4):
+					return (d1*(x - ctr) + d2*(x - ctr)**2 + d3*(x - ctr)**3 + d4*(x - ctr)**4)*(x <= ctr)
+					
+			mod = Model(poly2vbm, prefix='bg_')
+			pars = mod.make_params()
+			if self.fitp0.item(index_bg+1, 1) == None or self.fitp0.item(index_bg+1, 3) == None or self.fitp0.item(index_bg+1, 5) == None or self.fitp0.item(index_bg+1, 7) == None or self.fitp0.item(index_bg+1, 9) == None:
+				pars['bg_ctr'].value = (x[0] + x[-1])/2
+				pars['bg_d1'].value = 0
+				pars['bg_d2'].value = 0
+				pars['bg_d3'].value = 0
+				pars['bg_d4'].value = 0
+			else:
+				if len(self.fitp0.item(index_bg+1, 1).text()) == 0 or len(self.fitp0.item(index_bg+1, 3).text()) == 0 or len(self.fitp0.item(index_bg+1, 5).text()) == 0 or len(self.fitp0.item(index_bg+1, 7).text()) == 0 or len(self.fitp0.item(index_bg+1, 9).text()) == 0:
+					pars['bg_ctr'].value = (x[0] + x[-1])/2
+					pars['bg_d1'].value = 0
+					pars['bg_d2'].value = 0
+					pars['bg_d3'].value = 0
+					pars['bg_d4'].value = 0
+				else:
+					pars['bg_ctr'].value = float(self.fitp0.item(index_bg+1, 1).text())
+					pars['bg_d1'].value = float(self.fitp0.item(index_bg+1, 3).text())
+					pars['bg_d2'].value = float(self.fitp0.item(index_bg+1, 5).text())
+					pars['bg_d3'].value = float(self.fitp0.item(index_bg+1, 7).text())
+					pars['bg_d4'].value = float(self.fitp0.item(index_bg+1, 9).text())
+			bg_mod = 0
 
 		# Polynomial BG to be added for all BG
 		if index_bg <= 2:
@@ -923,7 +956,13 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				pars['bg_amplitude'].vary = False
 				pars['bg_center'].vary = False
 				pars['bg_sigma'].vary = False
-	
+			if index_bg == 6:
+				pars['bg_ctr'].vary = False
+				pars['bg_d1'].vary = False
+				pars['bg_d2'].vary = False
+				pars['bg_d3'].vary = False
+				pars['bg_d4'].vary = False
+				
 			# constraints of peak parameters (checkbox to hold)
 			for index_pk in range(npeak):
 				index = self.fitp1.cellWidget(0, 2*index_pk+1).currentIndex()
@@ -969,7 +1008,23 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				if self.fitp0.item(index_bg+1, 4).checkState() == 2:
 					if len(self.fitp0.item(index_bg+1, 5).text()) > 0:
 						pars['bg_sigma'].vary = False
-
+			if index_bg == 6:
+				if self.fitp0.item(index_bg+1, 0).checkState() == 2:
+					if len(self.fitp0.item(index_bg+1, 1).text()) > 0:
+						pars['bg_ctr'].vary = False
+				if self.fitp0.item(index_bg+1, 2).checkState() == 2:
+					if len(self.fitp0.item(index_bg+1, 3).text()) > 0:
+						pars['bg_d1'].vary = False
+				if self.fitp0.item(index_bg+1, 4).checkState() == 2:
+					if len(self.fitp0.item(index_bg+1, 5).text()) > 0:
+						pars['bg_d2'].vary = False
+				if self.fitp0.item(index_bg+1, 6).checkState() == 2:
+					if len(self.fitp0.item(index_bg+1, 7).text()) > 0:
+						pars['bg_d3'].vary = False
+				if self.fitp0.item(index_bg+1, 8).checkState() == 2:
+					if len(self.fitp0.item(index_bg+1, 9).text()) > 0:
+						pars['bg_d4'].vary = False
+						
 			#Constraints of peak parameters
 			for index_pk in range(npeak):
 				# fixed peak parameters (checkbox to hold)
@@ -1083,6 +1138,17 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.fitp0.setItem(index_bg+1, 3, item)
 			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_sigma'].value, self.floating)))
 			self.fitp0.setItem(index_bg+1, 5, item)
+		if index_bg == 6:
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_ctr'].value, self.floating)))
+			self.fitp0.setItem(index_bg+1, 1, item)
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_d1'].value, self.floating)))
+			self.fitp0.setItem(index_bg+1, 3, item)
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_d2'].value, self.floating)))
+			self.fitp0.setItem(index_bg+1, 5, item)
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_d3'].value, self.floating)))
+			self.fitp0.setItem(index_bg+1, 7, item)
+			item = QtWidgets.QTableWidgetItem(str(format(out.params['bg_d4'].value, self.floating)))
+			self.fitp0.setItem(index_bg+1, 9, item)
 
 		# Peak results into table
 		for index_pk in range(npeak):
@@ -1174,7 +1240,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		cp = QtWidgets.QDesktopWidget().availableGeometry().center()
 		qr.moveCenter(cp)
 		self.move(qr.topLeft())
-
 
 def main():
 	app = QtWidgets.QApplication(sys.argv)
