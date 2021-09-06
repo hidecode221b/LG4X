@@ -10,19 +10,23 @@ LG4X provides a graphical user interface for [XPS](https://en.wikipedia.org/wiki
 ## Methods
 ### Installation
 
-Download and install [Python 3](https://www.python.org/)
+Download and install [Python 3](https://www.python.org/) and additional packages.
 
-> `pip install lmfit`
+> `brew install python3`
 >
-> `pip install pandas`
+> `pip3 install lmfit`
 >
-> `pip install matplotlib`
+> `pip3 install pandas`
 >
-> `pip install PyQt5`
+> `pip3 install matplotlib`
+>
+> `pip3 install PyQt5`
+
+The OS dependence of installation of python, pip, and brew is described in the [link](https://appdividend.com/2020/04/22/how-to-upgrade-pip-in-mac-update-pip-on-windows-and-linux/).
 
 ### Update package if necessary
 
-> `pip install --upgrade lmfit`
+> `pip3 install --upgrade lmfit`
 
 ### Supplementary code for XPS analysis
 
@@ -32,7 +36,7 @@ Download and install [Python 3](https://www.python.org/)
 
 ### Start LG4X
 
-> `python main.py`
+> `python3 main.py`
 
 ### Testing and developing environment
 
@@ -60,7 +64,7 @@ Download and install [Python 3](https://www.python.org/)
     - Load a preset file if available.
 1. Evaluate parameters
     - Plot the curves without optimization.
-    - Simulate the curves if no data file is selected.
+    - Simulate the curves if no data file is selected in the File list.
 1. Fit curve
     - Adjust parameters and bounds until they become converged
 1. Export results
@@ -91,7 +95,11 @@ You can add and remove peak at the end of column from the Fit table.
 ### Drop-down menus
 
 #### Importing data
-LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
+LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
+
+**Update**: VAMAS file format can also be imported in LG4X by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use LG4X to convert the VAMAS file into tab separated text files for the other program you prefer.
+
+Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
 
 #### File list
 Imported file path is added in the list. You can choose the path to import a data file again from the list once you import the data file.
@@ -106,6 +114,7 @@ You can choose the BG type to be subtracted from the raw data as listed below. S
 
 | No. | String | BG model | Parameters |
 | --- | --- | --- | --- |
+| 0 | | | x_min, x_max for fitting region in spectrum |
 | 1 | | Shirley BG | Initial, max iteration, # of points for simulation |
 | 2 | | Tougaard BG | B, C, C', D |
 | 3 | pg | Polynomial BG | c0, c1, c2, c3 |
@@ -156,7 +165,7 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 ![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "Simulated spectrum")
 
-
+You can find the VAMAS format data of various spectra from [Spectroscopy Hub](https://spectroscopyhub.com/measurements).
 
 
 
