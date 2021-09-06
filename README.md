@@ -28,26 +28,28 @@ Download and install [Python 3](https://www.python.org/)
 
 [xpspy.py](https://github.com/heitler/LG4X/blob/master/Python/xpspy.py) should be located in the same directory as [main.py](https://github.com/heitler/LG4X/blob/master/Python/main.py) for XPS energy range selection for background (BG) subtraction in Shirley and Tougaard methods, which are taken from codes by [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
 
+[vamas.py](https://github.com/heitler/LG4X/blob/master/Python/vamas.py) and [vamas_export.py](https://github.com/heitler/LG4X/blob/master/Python/vamas_export.py) are also necessary for importing ISO [VAMAS](https://doi.org/10.1002/sia.740130202) format file. vamas.py is a modifed class of VAMAS format from [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/vamas.py).
+
 ### Start LG4X
 
 > `python main.py`
 
 ### Testing and developing environment
 
-* Python 3.8.3
-* asteval==0.9.18
-* lmfit==1.0.1
-* matplotlib==3.2.1
-* numpy==1.18.4
-* pandas==1.0.3
-* PyQt5==5.14.2
-* scipy==1.4.1
-* uncertainties==3.1.2
+* Python 3.9.5
+* asteval==0.9.23
+* lmfit==1.0.2
+* matplotlib==3.4.3
+* numpy==1.20.3
+* pandas==1.3.2
+* PyQt5==5.15.4
+* scipy==1.6.3
+* uncertainties==3.1.5
 
 ### Usage
 
 1. Import data
-    - Import csv or text file format.
+    - Import csv, text, or vamas (.vms/.npl) file format.
     - All csv and text files in a directory.
     - Choose data from file list if it was already imported.
 1. Setup background and peak parameters with their types
