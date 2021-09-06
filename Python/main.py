@@ -1,4 +1,4 @@
-# LG4X: lmfit gui for xps curve fitting, Copyright (C) 2020, Hideki NAKAJIMA, Synchrotron Light Research Institute, Thailand
+# LG4X: lmfit gui for xps curve fitting, Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Thailand
 
 from PyQt5 import QtWidgets,QtCore
 import sys, os
@@ -13,6 +13,7 @@ from lmfit.models import GaussianModel, LorentzianModel, VoigtModel, PseudoVoigt
 from lmfit.models import ExponentialGaussianModel, SkewedGaussianModel, SkewedVoigtModel, DoniachModel, BreitWignerModel, LognormalModel
 from lmfit import Model
 import xpspy as xpy
+import vamas_export as vpy
 
 #style.use('ggplot')
 style.use('seaborn-pastel')
@@ -24,12 +25,12 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.060'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.070'
 		self.floating = '.2f'
 		self.setGeometry(600,300, 1100, 700)
 		self.center()
 		self.setWindowTitle(self.version)     
-		self.statusBar().showMessage('Copyright (C) 2020, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
+		self.statusBar().showMessage('Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
 		
 		# Grid Layout
 		grid = QtWidgets.QGridLayout()
@@ -41,8 +42,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		widget.setLayout(grid)
 		
 		# Home directory
-		self.filePath = QtCore.QDir.homePath()
-		#self.filePath = '/Users/hidekinakajima/Desktop/W@home/Python/'
+		#self.filePath = QtCore.QDir.homePath()
+		self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'
 		
 		# Figure: Canvas and Toolbar
 		#self.figure = plt.figure(figsize=(6.7,5))
@@ -61,7 +62,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.result = pd.DataFrame()
 
 		# lists of dropdown menus
-		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Open directory']
+		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Import vms', 'Open directory']
 		self.list_file = ['File list']
 		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG', 'VBM/Cutoff']
 		self.list_preset = ['Fitting preset', 'New', 'Load', 'Save', 'C1s', 'C K edge']
@@ -394,7 +395,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			for col in range(len(list_pre_pk[0])):
 				if (col % 2) != 0:
 					if row == 0 or row == 8 or row == 10:
-						comboBox	= QtWidgets.QComboBox()
+						comboBox = QtWidgets.QComboBox()
 						if row == 0:
 							comboBox.addItems(self.list_shape)
 						else:
@@ -542,7 +543,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				
 				# fit results to be checked
 				#for key in self.export_out.params:
-					#Text += str(key) + "\t" + str(self.export_out.params[key].value) + '\n'
+					#Text += str(key) + '\t' + str(self.export_out.params[key].value) + '\n'
 				indpk =0
 				indpar = 0
 				strpk =''
@@ -554,7 +555,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				par_list = np.array([[None]*9] * int(npeak), dtype='f')
 				for key in self.export_out.params:
 					if str(key)[1] == 'g':
-						Text += str(key) + "\t" + str(self.export_out.params[key].value) + '\n'
+						Text += str(key) + '\t' + str(self.export_out.params[key].value) + '\n'
 					else:
 						if len(strpk) > 0:
 							if str(key)[:int(str(key).find('_'))] == strpk:
@@ -612,6 +613,20 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					self.comboBox_file.setCurrentIndex(index)
 				self.plot
 		if index == 3:
+			cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open VAMAS file', self.filePath, 'VMS Files (*.vms *.npl)')
+			if cfilePath != "":
+				#print (cfilePath)
+				self.list_vamas = vpy.list_vms(cfilePath)
+				self.list_file.extend(self.list_vamas)
+				
+				#print (self.list_file)
+				self.comboBox_file.clear()
+				self.comboBox_file.addItems(self.list_file)
+				index = self.comboBox_file.findText(str(self.list_vamas[0]), QtCore.Qt.MatchFixedString)
+				if index > 0:
+					self.comboBox_file.setCurrentIndex(index)
+				self.plot
+		if index == 4:
 			dir = QtWidgets.QFileDialog.getExistingDirectory(self, "Open Directory", self.filePath, QtWidgets.QFileDialog.ShowDirsOnly)
 			if dir != "":
 				entries = os.listdir(dir)
