@@ -25,7 +25,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.070'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.071'
 		self.floating = '.2f'
 		self.setGeometry(600,300, 1100, 700)
 		self.center()
@@ -65,7 +65,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Import vms', 'Open directory']
 		self.list_file = ['File list']
 		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG', 'VBM/Cutoff']
-		self.list_preset = ['Fitting preset', 'New', 'Load', 'Save', 'C1s', 'C K edge']
+		self.list_preset = ['Fitting preset', 'New', 'Load', 'Add', 'Save', 'C1s', 'C K edge']
 
 		# DropDown file import
 		self.comboBox_imp = QtWidgets.QComboBox(self)
@@ -92,7 +92,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		grid.addWidget(self.comboBox_pres, 2, 0, 1, 2)
 		self.comboBox_pres.currentIndexChanged.connect(self.preset)
 		self.comboBox_pres.setCurrentIndex(0)
-		
+		self.addition = 0
+
 		# Fit Button
 		btn_fit = QtWidgets.QPushButton('Fit', self)
 		btn_fit.resize(btn_fit.sizeHint())    
@@ -331,9 +332,14 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			if len(str(self.pre[0])) != 0 and len(self.pre[1]) != 0 and len(self.pre[2]) != 0:
 				self.setPreset(self.pre[0], self.pre[1], self.pre[2])
 		if index == 3:
+			self.addPreset()
+			#print(self.df[0], self.df[1], self.df[2])
+			if len(str(self.pre[0])) != 0 and len(self.pre[1]) != 0 and len(self.pre[2]) != 0:
+				self.setPreset(self.pre[0], self.pre[1], self.pre[2])
+		if index == 4:
 			self.savePreset()
 			self.savePresetDia()
-		if index == 4:
+		if index == 5:
 			# load C1s peak preset
 			pre_bg = [[2,295,2,275,'','','','','',''],['cv',1e-06,'it',10,'','','','','',''],['B',2866,'C',1643,'C*',1.0,'D',1.0,'',''],[2,0,2,0,2,0,2,0,'','']]
 			if self.comboBox_file.currentIndex() > 0:
@@ -344,7 +350,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			else:
 				pre_pk = [[0,0,0,0,0,0,0,0],[2,284.6,2,286.5,2,288.0,2,291.0],[2,0.85,2,0.85,2,1.28,2,1.28],[2,0.85,2,0.85,2,1.28,2,1.28],[0,20000,0,2000,0,750,0,750],[2,0.5,2,0.5,2,0.5,2,0.5]]
 			self.setPreset(0, pre_bg, pre_pk)
-		if index == 5:
+		if index == 6:
 			# load C K edge preset
 			pre_bg = [[2, 270.7, 2, 320.7, '', '', '', '', '', ''], ['cv', 1e-06, 'it', 10.0, '', '', '', '', '', ''], ['B', 2866.0, 'C', 1643.0, 'C*', 1.0, 'D', 1.0, '', ''], [2, 0.07, 2, 0.0, 2, 0.0, 2, 0.0, '', ''], [2, 12.05, 2, 43.36, 2, 0.05, 0, '', '', ''], [2, 0.27, 2, 291.82, 2, 0.72, 0, '', '', ''], [0, '', 0, '', 0, '', 0, '', '', '']]
 
@@ -357,12 +363,12 @@ class PrettyWidget(QtWidgets.QMainWindow):
 
 		
 	def setPreset(self, index_bg, list_pre_bg, list_pre_pk):
-		if len(str(index_bg)) > 0:
+		if len(str(index_bg)) > 0 and self.addition == 0:
 			if int(index_bg) < len(self.list_bg):
 				self.comboBox_bg.setCurrentIndex(int(index_bg))
 
 		# load preset for bg
-		if len(list_pre_bg) != 0:
+		if len(list_pre_bg) != 0 and self.addition == 0:
 			for  row in range(len(list_pre_bg)):
 				for col in range(len(list_pre_bg[0])):
 					if (col % 2) != 0:
@@ -383,13 +389,17 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		# adjust npeak before load
 		if len(list_pre_pk) != 0:
 			colPosition = int(self.fitp1.columnCount()/2)
-			#print(int(colPosition), int(len(list_pre_pk[0])/2), list_pre_pk[0])
-			if colPosition > int(len(list_pre_pk[0])/2):
-				for col in range(colPosition - int(len(list_pre_pk[0])/2)):
-					self.rem_col()
-			if colPosition < int(len(list_pre_pk[0])/2):
-				for col in range(int(len(list_pre_pk[0])/2) - colPosition):
-					self.add_col()
+			if self.addition == 0:
+				#print(int(colPosition), int(len(list_pre_pk[0])/2), list_pre_pk[0])
+				if colPosition > int(len(list_pre_pk[0])/2):
+					for col in range(colPosition - int(len(list_pre_pk[0])/2)):
+						self.rem_col()
+				if colPosition < int(len(list_pre_pk[0])/2):
+					for col in range(int(len(list_pre_pk[0])/2) - colPosition):
+						self.add_col()
+			else:
+				for col in range(int(len(list_pre_pk[0])/2)):
+						self.add_col()
 
 		for  row in range(len(list_pre_pk)):
 			for col in range(len(list_pre_pk[0])):
@@ -400,14 +410,24 @@ class PrettyWidget(QtWidgets.QMainWindow):
 							comboBox.addItems(self.list_shape)
 						else:
 							comboBox.addItems(self.list_peak)
-						self.fitp1.setCellWidget(row, col, comboBox)
-						comboBox.setCurrentIndex(list_pre_pk[row][col])
+						if self.addition == 0:
+							self.fitp1.setCellWidget(row, col, comboBox)
+							comboBox.setCurrentIndex(list_pre_pk[row][col])
+						else:
+							self.fitp1.setCellWidget(row, col + colPosition*2, comboBox)
+							if list_pre_pk[row][col] != 0:
+								comboBox.setCurrentIndex(list_pre_pk[row][col] + colPosition)
+							else:
+								comboBox.setCurrentIndex(list_pre_pk[row][col])
 					else:
 						if str(list_pre_pk[row][col]) == '':
 							item = QtWidgets.QTableWidgetItem('')
 						else:
 							item = QtWidgets.QTableWidgetItem(str(format(list_pre_pk[row][col], self.floating)))
-						self.fitp1.setItem(row, col, item)
+						if self.addition == 0:
+							self.fitp1.setItem(row, col, item)
+						else:
+							self.fitp1.setItem(row, col + colPosition*2, item)
 				else:
 					if row != 0 and row != 8 and row != 9 and row != 10 and row != 11:
 						item = QtWidgets.QTableWidgetItem()
@@ -415,8 +435,10 @@ class PrettyWidget(QtWidgets.QMainWindow):
 							item.setCheckState(QtCore.Qt.Checked)
 						else:
 							item.setCheckState(QtCore.Qt.Unchecked)
-						
-						self.fitp1.setItem(row, col, item)
+						if self.addition == 0:
+							self.fitp1.setItem(row, col, item)
+						else:
+							self.fitp1.setItem(row, col + colPosition*2, item)
 
 
 	def loadPreset(self):
@@ -435,6 +457,27 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.comboBox_pres.clear()
 			self.comboBox_pres.addItems(self.list_preset)
 			self.comboBox_pres.setCurrentIndex(0)
+			self.addition = 0
+		else:
+			self.pre = [[],[],[]]
+
+	def addPreset(self):
+		cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open data file', self.filePath, "DAT Files (*.dat)")
+		if cfilePath != "":
+			print (cfilePath)
+			self.filePath = cfilePath
+			with open(cfilePath, 'r') as file:
+				self.pre = file.read()
+			file.close
+			#print(self.pre, type(self.pre))
+			self.pre = ast.literal_eval(self.pre) 
+			#self.pre = json.loads(self.pre) #json does not work due to the None issue
+			#print(self.pre, type(self.pre))
+			self.list_preset.append(str(cfilePath))
+			self.comboBox_pres.clear()
+			self.comboBox_pres.addItems(self.list_preset)
+			self.comboBox_pres.setCurrentIndex(0)
+			self.addition = 1
 		else:
 			self.pre = [[],[],[]]
 
@@ -742,13 +785,28 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.ax.set_ylabel('Intensity (arb. unit)', fontsize=11)
 		self.ar.set_title(self.comboBox_file.currentText(), fontsize=11)
 		
-		# fit or simulation range
+		# if no range is specified, fill it from data
+		if self.fitp0.item(0, 1) == None or len(self.fitp0.item(0, 1).text()) == 0:
+			item = QtWidgets.QTableWidgetItem(str(x0[0]))
+			self.fitp0.setItem(0, 1, item)
+		if self.fitp0.item(0, 3) == None or len(self.fitp0.item(0, 3).text()) == 0:
+			item = QtWidgets.QTableWidgetItem(str(x0[len(x0)-1]))
+			self.fitp0.setItem(0, 3, item)
+		# fit or simulation range. If range is incorrect, back to default
 		if self.fitp0.item(0, 0).checkState() == 2:
 			x1 = float(self.fitp0.item(0, 1).text()) 
+			if ((x1 > x0[0] or x1 < x0[len(x0)-1]) and x0[0] > x0[-1]) or ((x1 < x0[0] or x1 > x0[len(x0)-1]) and x0[0] < x0[-1]):
+				x1 = x0[0]
+				item = QtWidgets.QTableWidgetItem(str(x0[0]))
+				self.fitp0.setItem(0, 1, item)
 		else:
 			x1 = x0[0]
 		if self.fitp0.item(0, 2).checkState() == 2:
 			x2 = float(self.fitp0.item(0, 3).text())
+			if ((x2 < x0[len(x0)-1] or x2 > x1) and x0[0] > x0[-1]) or ((x2 > x0[len(x0)-1] or x2 < x1) and x0[0] < x0[-1]):
+				x2 = x0[len(x0)-1]
+				item = QtWidgets.QTableWidgetItem(str(x0[len(x0)-1]))
+				self.fitp0.setItem(0, 3, item)
 		else:
 			x2 = x0[len(x0)-1]
 
