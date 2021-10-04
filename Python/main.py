@@ -7,6 +7,7 @@ import pandas as pd
 import ast
 import matplotlib.pyplot as plt
 from matplotlib import style
+from matplotlib.artist import Artist
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from lmfit.models import GaussianModel, LorentzianModel, VoigtModel, PseudoVoigtModel, ThermalDistributionModel, PolynomialModel, StepModel
@@ -14,23 +15,31 @@ from lmfit.models import ExponentialGaussianModel, SkewedGaussianModel, SkewedVo
 from lmfit import Model
 import xpspy as xpy
 import vamas_export as vpy
+from periodictable import PeriodicTable
+from periodictableui import Ui_PeriodicTable
+from elements import Transition
+from elementdata import ElementData
 
 #style.use('ggplot')
 style.use('seaborn-pastel')
 
 class PrettyWidget(QtWidgets.QMainWindow):
 	def __init__(self):
-		super().__init__()
+		super(PrettyWidget, self).__init__()
 		#super(PrettyWidget, self).__init__()
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.071'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.080'
 		self.floating = '.2f'
 		self.setGeometry(600,300, 1100, 700)
 		self.center()
 		self.setWindowTitle(self.version)     
 		self.statusBar().showMessage('Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
+		self.pt = PeriodicTable()
+		self.pt.setWindowTitle('Periodic Table')
+		self.pt.elementEmitted.connect(self.handleElementClicked)
+		self.pt.selectedElements = []
 		
 		# Grid Layout
 		grid = QtWidgets.QGridLayout()
@@ -63,9 +72,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 
 		# lists of dropdown menus
 		self.list_imp = ['Importing data', 'Import csv', 'Import txt', 'Import vms', 'Open directory']
-		self.list_file = ['File list']
+		self.list_file = ['File list', 'Clear list']
 		self.list_bg = ['Shirley BG', 'Tougaard BG', 'Polynomial BG', 'Fermi-Dirac BG', 'Arctan BG', 'Erf BG', 'VBM/Cutoff']
-		self.list_preset = ['Fitting preset', 'New', 'Load', 'Add', 'Save', 'C1s', 'C K edge']
+		self.list_preset = ['Fitting preset', 'New', 'Load', 'Append', 'Save', 'C1s', 'C K edge', 'Periodic Table']
 
 		# DropDown file import
 		self.comboBox_imp = QtWidgets.QComboBox(self)
@@ -126,7 +135,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		
 		# PolyBG Table
 		list_bg_col = ['bg_c0', 'bg_c1', 'bg_c2', 'bg_c3', 'bg_c4']
-		list_bg_row = ['Range', 'Shirley', 'Tougaard', 'Polynomial', 'FD (amp, ctr, kt)', 'arctan (amp, ctr, sig)', 'erf (amp, ctr, sig)', 'cutoff (ctr, d1-4)']
+		list_bg_row = ['Range (x0,x1), pt, hn, wf', 'Shirley', 'Tougaard', 'Polynomial', 'FD (amp, ctr, kt)', 'arctan (amp, ctr, sig)', 'erf (amp, ctr, sig)', 'cutoff (ctr, d1-4)']
 		self.fitp0 = QtWidgets.QTableWidget(len(list_bg_row),len(list_bg_col)*2)
 		list_bg_colh = ['', 'bg_c0', '', 'bg_c1', '', 'bg_c2', '', 'bg_c3', '', 'bg_c4']
 		self.fitp0.setHorizontalHeaderLabels(list_bg_colh)
@@ -142,7 +151,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 					self.fitp0.setItem(row, col*2, item)
 
 		# set BG table default
-		pre_bg = [[0,300,0,270,'','','','','',''],['cv',1e-06,'it',10,'','','','','',''],['B',2866,'C',1643,'C*',1.0,'D',1.0,'',''],[2,0,2,0,2,0,2,0,'','']]
+		pre_bg = [[0,300,0,270,'pt',101,'hn',1486.6,'wf',4],['cv',1e-06,'it',10,'','','','','',''],['B',2866,'C',1643,'C*',1.0,'D',1.0,'',''],[2,0,2,0,2,0,2,0,'','']]
 		self.setPreset(0, pre_bg, [])
 
 		self.fitp0.resizeColumnsToContents()
@@ -204,8 +213,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		grid.addWidget(self.fitp1, 4, 3, 1, 4)
 		
 		self.show()
-		
-	
+
 	def add_col(self):
 		rowPosition = self.fitp1.rowCount()
 		colPosition = self.fitp1.columnCount()
@@ -281,7 +289,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.fitp1.resizeColumnsToContents()
 		#self.fitp1.setColumnWidth(1, 55)
 
-
 	def rem_col(self):
 		colPosition = self.fitp1.columnCount()
 		if colPosition > 2:
@@ -292,7 +299,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			for col in range(int(colPosition/2)):
 				if col < int(colPosition/2)-1:
 					index = self.fitp1.cellWidget(8, 2*col+1).currentIndex()
-				comboBox	= QtWidgets.QComboBox()
+				comboBox = QtWidgets.QComboBox()
 				comboBox.addItems(self.list_peak)
 				self.fitp1.setCellWidget(8, 2*col+1, comboBox)
 				if index > 0:
@@ -301,12 +308,11 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			for col in range(int(colPosition/2)):
 				if col < int(colPosition/2)-1:
 					index = self.fitp1.cellWidget(10, 2*col+1).currentIndex()
-				comboBox	= QtWidgets.QComboBox()
+				comboBox = QtWidgets.QComboBox()
 				comboBox.addItems(self.list_peak)
 				self.fitp1.setCellWidget(10, 2*col+1, comboBox)
 				if index > 0:
 					comboBox.setCurrentIndex(index)
-
 
 	def preset(self):
 		index = self.comboBox_pres.currentIndex()
@@ -356,12 +362,13 @@ class PrettyWidget(QtWidgets.QMainWindow):
 
 			pre_pk = [['', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0], [0, 284.95, 0, 286.67, 0, 287.57, 0, 289.0, 0, 290.69, 0, 292.27, 2, 296.0, 2, 302.0, 2, 310.0], [0, 0.67, 0, 0.5, 0, 0.8, 0, 0.8, 0, 1.0, 0, 1.5, 0, 3.0, 0, 5.0, 0, 5.0], [2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0], [0, 0.51, 0, 0.1, 0, 0.32, 0, 0.37, 0, 0.28, 0, 0.29, 0, 0.59, 0, 1.21, 0, 0.2], [2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0, 2, 0.0], [2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, ''], [2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, '', 2, ''], ['', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], ['', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0], ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''], [0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, ''], [0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, ''], [2, 0.5, 2, 0.5, 2, 0.5, 2, 0.5, 2, 0.5, 2, 1.0, 2, 2.0, 2, 2.0, 2, 2.0], [2, 0.8, 2, 0.8, 2, 0.8, 2, 0.8, 2, 1.0, 2, 1.5, 2, 3.0, 2, 5.0, 2, 5.0], [0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, ''], [0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, '', 0, ''], [2, 0.1, 2, 0.1, 2, 0.1, 2, 0.1, 2, 0.0, 2, 0.1, 2, 0.1, 2, 0.1, 2, 0.0]]
 			self.setPreset(4, pre_bg, pre_pk)
+		if index == 7:
+			self.pt.show()
 
 		self.comboBox_pres.setCurrentIndex(0)
 		self.fitp1.resizeColumnsToContents()
 		self.fitp1.resizeRowsToContents()
 
-		
 	def setPreset(self, index_bg, list_pre_bg, list_pre_pk):
 		if len(str(index_bg)) > 0 and self.addition == 0:
 			if int(index_bg) < len(self.list_bg):
@@ -439,7 +446,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 							self.fitp1.setItem(row, col, item)
 						else:
 							self.fitp1.setItem(row, col + colPosition*2, item)
-
 
 	def loadPreset(self):
 		cfilePath, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Open data file', self.filePath, "DAT Files (*.dat)")
@@ -540,8 +546,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.parText = [self.comboBox_bg.currentIndex()]
 		self.parText.append(list_pre_bg)
 		self.parText.append(list_pre_pk)
-		
-		
+
 	def savePresetDia(self):
 		if self.comboBox_file.currentIndex() > 0:
 			cfilePath = os.path.dirname(str(self.comboBox_file.currentText()))
@@ -559,7 +564,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			with open(cfilePath, 'w') as file:
 				file.write(str(self.parText))
 			file.close
-
 
 	def exportResults(self):
 		if self.result.empty == False:
@@ -637,7 +641,6 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				self.result.to_csv(filePath1+os.sep+fileName+'_fit.csv', index = False)
 				#print(self.result)
 
-
 	def imp(self):
 		index = self.comboBox_imp.currentIndex()
 		if index == 1 or index == 2:
@@ -681,9 +684,57 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				self.comboBox_file.addItems(self.list_file)
 		self.comboBox_imp.setCurrentIndex(0)
 
+	def plot_pt(self):
+		#print('before', len(self.ax.texts))
+		if len(self.ax.texts) > 0:
+			for txt in self.ax.texts:
+				txt.remove()
+			self.canvas.draw()
+			self.repaint()
+			#self.ax.texts.remove()
+		#print('after', len(self.ax.texts))
+		if self.pt.selectedElements != []:
+			if self.fitp0.item(0, 7).text() != None and self.fitp0.item(0, 9).text() != None:
+				if len(self.fitp0.item(0, 7).text()) > 0 and len(self.fitp0.item(0, 9).text()) > 0:
+					pe = float(self.fitp0.item(0, 7).text()) 
+					wf = float(self.fitp0.item(0, 9).text()) 
+				else:
+					pe = 1486.6
+					wf = 4
+			else:
+				pe = 1486.6
+				wf = 4
+			ymin, ymax = self.ax.get_ylim()
+			for obj in self.pt.selectedElements:
+				#print(obj.symbol, obj.alka)
+				if len(obj.alka['trans']) > 0:    
+					for orb in range(len(obj.alka['trans'])):
+						elem_x = np.asarray([float(obj.alka['be'][orb])])
+						elem_y = np.asarray([float(obj.alka['rsf'][orb])])
+						elem_z = obj.alka['trans'][orb]
+						#print(elem_x, elem_y, elem_z)
+						self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/60, obj.symbol+elem_z, color="r", rotation="vertical")
+				if len(obj.aes['trans']) > 0:                                                                                                                          
+					for orb in range(len(obj.aes['trans'])):
+						ke = pe - wf - float(obj.aes['ke'][orb])
+						elem_x = np.asarray([ke])
+						elem_y = np.asarray([float(obj.aes['rsf'][orb])])
+						elem_z = obj.aes['trans'][orb]
+						#print(elem_x, elem_y, elem_z)
+						self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/6, obj.symbol+elem_z, color="g", rotation="vertical")
+				                               
+			self.canvas.draw()
+			self.repaint()
+		#print('new', len(self.ax.texts))
 
 	def plot(self):
-		if self.comboBox_file.currentIndex() > 0:
+		# when file list is selected
+		if self.comboBox_file.currentIndex() == 1:
+			self.comboBox_file.clear()
+			self.list_file = ['File list', 'Clear list']
+			self.comboBox_file.addItems(self.list_file)
+			self.comboBox_file.setCurrentIndex(0)
+		elif self.comboBox_file.currentIndex() > 1:
 			#self.df = np.loadtxt(str(self.comboBox_file.currentText()), delimiter=',', skiprows=1)
 			fileName = os.path.basename(self.comboBox_file.currentText())
 			if os.path.splitext(fileName)[1] == '.csv':
@@ -700,7 +751,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.ar.cla()
 			self.ax.cla()
 			#ax = self.figure.add_subplot(221)
-			self.ax.plot(x0, y0, 'o', color="b", label="raw")
+			#self.ax.plot(x0, y0, 'o', color="b", label="raw")
+			self.ax.plot(x0, y0, linestyle='-', color="b", label="raw")
 			if x0[0] > x0[-1]:
 				#self.ax.invert_xaxis()
 				self.ax.set_xlabel('Binding energy (eV)', fontsize=11)
@@ -744,10 +796,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 						pnts = 101
 					self.df = np.array([[0] * 2]*pnts, dtype='f')
 					self.df[:, 0] = np.linspace(x1, x2, pnts)
-					self.ana('eva')
-		else:
-			self.ana('eva')
-
+		self.ana('eva')
 
 	def fit(self):
 		if self.comboBox_file.currentIndex() > 0:
@@ -771,7 +820,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		else:
 			# simulation mode
 			if self.comboBox_file.currentIndex() == 0:
-				self.ax.plot(x0, y0, ',', color='b', label='raw')
+				pass
+				#self.ax.plot(x0, y0, ',', color='b', label='raw')
 			# evaluation mode
 			else:
 				self.ax.plot(x0, y0, 'o', mfc='none', color='b', label='raw')
@@ -783,7 +833,12 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		plt.xlim(x0[0], x0[-1])
 		self.ax.grid(True)
 		self.ax.set_ylabel('Intensity (arb. unit)', fontsize=11)
-		self.ar.set_title(self.comboBox_file.currentText(), fontsize=11)
+		
+		if self.comboBox_file.currentIndex() == 0:
+			# simulation mode
+			self.ar.set_title('Simulation', fontsize=11)
+		else:
+			self.ar.set_title(self.comboBox_file.currentText(), fontsize=11)
 		
 		# if no range is specified, fill it from data
 		if self.fitp0.item(0, 1) == None or len(self.fitp0.item(0, 1).text()) == 0:
@@ -1314,11 +1369,16 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		qr.moveCenter(cp)
 		self.move(qr.topLeft())
 
-def main():
+	def handleElementClicked(self, elementObject, checked):
+		symbol = elementObject.symbol
+		if checked and elementObject not in self.pt.selectedElements:
+			self.pt.selectedElements.append(elementObject)
+		elif not checked:
+			self.pt.selectedElements.remove(elementObject)
+		self.plot_pt()	
+			
+
+if __name__ == '__main__':
 	app = QtWidgets.QApplication(sys.argv)
 	w = PrettyWidget()
 	sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-	main()
