@@ -1,13 +1,11 @@
 # LG4X: lmfit gui for xps curve fitting, Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Thailand
 
 from PyQt5 import QtWidgets,QtCore
-import sys, os
+import sys, os, math, ast
 import numpy as np
 import pandas as pd
-import ast
 import matplotlib.pyplot as plt
 from matplotlib import style
-from matplotlib.artist import Artist
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from lmfit.models import GaussianModel, LorentzianModel, VoigtModel, PseudoVoigtModel, ThermalDistributionModel, PolynomialModel, StepModel
@@ -705,23 +703,34 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				pe = 1486.6
 				wf = 4
 			ymin, ymax = self.ax.get_ylim()
+			xmin, xmax = self.ax.get_xlim()
+			#print(xmin,xmax)
 			for obj in self.pt.selectedElements:
 				#print(obj.symbol, obj.alka)
 				if len(obj.alka['trans']) > 0:    
 					for orb in range(len(obj.alka['trans'])):
-						elem_x = np.asarray([float(obj.alka['be'][orb])])
+						if xmin > xmax:
+							en = float(obj.alka['be'][orb])
+						else:
+							en = pe - wf - float(obj.alka['be'][orb])
+						elem_x = np.asarray([en])
 						elem_y = np.asarray([float(obj.alka['rsf'][orb])])
 						elem_z = obj.alka['trans'][orb]
 						#print(elem_x, elem_y, elem_z)
-						self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/60, obj.symbol+elem_z, color="r", rotation="vertical")
+						#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/60, obj.symbol+elem_z, color="r", rotation="vertical")
+						self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10)/2, obj.symbol+elem_z, color="r", rotation="vertical")
 				if len(obj.aes['trans']) > 0:                                                                                                                          
 					for orb in range(len(obj.aes['trans'])):
-						ke = pe - wf - float(obj.aes['ke'][orb])
-						elem_x = np.asarray([ke])
+						if xmin > xmax:
+							en = pe - wf - float(obj.aes['ke'][orb])
+						else:
+							en = float(obj.aes['ke'][orb])
+						elem_x = np.asarray([en])
 						elem_y = np.asarray([float(obj.aes['rsf'][orb])])
 						elem_z = obj.aes['trans'][orb]
 						#print(elem_x, elem_y, elem_z)
-						self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/6, obj.symbol+elem_z, color="g", rotation="vertical")
+						#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/6, obj.symbol+elem_z, color="g", rotation="vertical")
+						self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10), obj.symbol+elem_z, color="g", rotation="vertical")
 				                               
 			self.canvas.draw()
 			self.repaint()
@@ -739,14 +748,23 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			fileName = os.path.basename(self.comboBox_file.currentText())
 			if os.path.splitext(fileName)[1] == '.csv':
 				self.df = np.loadtxt(str(self.comboBox_file.currentText()), delimiter=',', skiprows=1)
+				strpe = np.loadtxt(str(self.comboBox_file.currentText()), dtype='str', delimiter=',', usecols=1, max_rows=1)
 				#self.df = pd.read_csv(str(self.comboBox_file.currentText()), dtype = float,  skiprows=1, header=None)
 			else:
 				self.df = np.loadtxt(str(self.comboBox_file.currentText()), delimiter='\t', skiprows=1)
+				strpe = np.loadtxt(str(self.comboBox_file.currentText()), dtype='str', delimiter='\t', usecols=1, max_rows=1)
 				#self.df = pd.read_csv(str(self.comboBox_file.currentText()), dtype = float,  skiprows=1, header=None, delimiter = '\t')
 
 			x0 = self.df[:,0]
 			y0 = self.df[:,1]
-
+			#print(strpe)
+			strpe = (str(strpe).split())
+			#print(pe)
+			if strpe[0] == 'PE:' and strpe[2] == 'eV':
+				pe = float(strpe[1])
+				#print(pe)
+				item = QtWidgets.QTableWidgetItem(str(pe))
+				self.fitp0.setItem(0, 7, item)
 			#plt.cla()
 			self.ar.cla()
 			self.ax.cla()
@@ -770,6 +788,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.fitp0.setItem(0, 1, item)
 			item = QtWidgets.QTableWidgetItem(str(x0[len(x0)-1]))
 			self.fitp0.setItem(0, 3, item)
+
 			#print(str(plt.get_fignums()))
 		# select file list index ==0 to clear figure for simulation
 		if self.comboBox_file.currentIndex() == 0 and self.comboBox_file.count() > 1:
