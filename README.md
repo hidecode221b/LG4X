@@ -34,6 +34,10 @@ The OS dependence of installation of python, pip, and brew is described in the [
 
 [vamas.py](https://github.com/heitler/LG4X/blob/master/Python/vamas.py) and [vamas_export.py](https://github.com/heitler/LG4X/blob/master/Python/vamas_export.py) are also necessary for importing ISO [VAMAS](https://doi.org/10.1002/sia.740130202) format file. vamas.py is a modifed class of VAMAS format from [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/vamas.py).
 
+[periodictable.py](https://github.com/heitler/LG4X/blob/master/Python/periodictable.py) and [periodictableui.py](https://github.com/heitler/LG4X/blob/master/Python/periodictableui.py) are the periodic table window to identify the peak elements. The codes are based on and revised from [clusterid](https://github.com/BrendanSweeny/clusterid).
+
+[elements.py](https://github.com/heitler/LG4X/blob/master/Python/elements.py) and [elementdata.py](https://github.com/heitler/LG4X/blob/master/Python/elementdata.py) are the class for peak energy and sensitivity used in the priodic table above. The codes are based on and revised from [clusterid](https://github.com/BrendanSweeny/clusterid).
+
 ### Start LG4X
 
 > `python3 main.py`
@@ -64,7 +68,7 @@ The OS dependence of installation of python, pip, and brew is described in the [
     - Load a preset file if available.
 1. Evaluate parameters
     - Plot the curves without optimization.
-    - Simulate the curves if no data file is selected in the File list.
+    - Simulate the curves based on the range and peaks if no data file is selected in the File list.
 1. Fit curve
     - Adjust parameters and bounds until they become converged
 1. Export results
@@ -81,7 +85,7 @@ An initial gui concept is taken from [here](http://songhuiming.github.io/pages/2
 ### Buttons
 
 #### Evaluate
-You can evaluate the fitting parameters without fitting optimization on data spectrum. If you have not imported the data, it works for simulation mode in the range you specify.
+You can evaluate the fitting parameters without fitting optimization on data spectrum. If you do not select the data, it works as simulation mode in the range you specify.
 
 #### Fit
 You can optimize the fitting parameters by least-square method, and parameters in the table are updated after optimization.
@@ -97,24 +101,26 @@ You can add and remove peak at the end of column from the Fit table.
 #### Importing data
 LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
 
-**Update**: VAMAS file format can also be imported in LG4X by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use LG4X to convert the VAMAS file into tab separated text files for the other program you prefer. Note that the binding energy scale is automatically created from VAMAS for XPS and UPS data.
+VAMAS file format can also be imported in LG4X by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use LG4X to convert the VAMAS file into tab separated text files for the other program you prefer. Note that the binding energy scale is automatically created from VAMAS for XPS and UPS data.
 
 Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
 
 #### File list
-Imported file path is added in the list. You can choose the path to import a data file again from the list once you import the data file.
+Imported file path is added in the list. You can choose the path to import a data file again from the list once you import the data file. Fitting parameters are loaded from `Fitting preset` menu below.
 
 #### Fitting preset
-Fitting condition can be created in the BG and Fit tables. From fitting preset drop-down menu, you can generate the most simple single-peak condition from `New`. If you have a preset previously saved, you can `load` a preset file, which will be listed in the fitting preset. Default conditions for XPS `C1s` and `C K edge` are also available from the list as examples. A preset filename is ended with `_pars.dat`, and parameters include in the preset file as a list in the following way.
+Fitting condition can be created in the BG and Fit tables. From fitting preset drop-down menu, you can create the most simple single-peak preset from `New`. If you have a preset previously saved, you can `load` a preset file, which will be listed in the `Fitting preset`. Typical conditions for XPS `C1s` and `C K edge` are also available from the list as examples. A preset filename is ended with `_pars.dat`, and parameters include in the preset file as a list in the following way.
 
 > `[*BG type index*, [*BG table parameters*], [*Fit table parameters*]]`
+
+**Udate** `Periodic table` is available to identify the peak position and relative intensity based on XPS Al Kalpha excitation source (1486.6 eV).
 
 #### BG types (`Shirley BG` to be shown as a default)
 You can choose the BG type to be subtracted from the raw data as listed below. Shirley and Tougaard BG iteration functions are available from xpypy.py, which should be located with main.py. From lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html), 3rd-order polynomial and 3 step functions are implemented. Fermi-Dirac (ThermalDistributionModel) is used for the Fermi edge fitting, and arctan and error functions (StepModel) for NEXAFS K edge BG. Polynomial function is added to the other BG models configured in the BG table, so polynomial parameters have to be taken into account for all BG optimization. You can turn off polynomial parameters by filling all zeros with turning on checkbox. Valence band maximum and secondary electron cutoff can be fitted with the 4th polynomial function for the density of states or edge jump at the onset. 
 
 | No. | String | BG model | Parameters |
 | --- | --- | --- | --- |
-| 0 | | | x_min, x_max for fitting region in spectrum |
+| 0 | | | x_min, x_max for fitting range, data points for simulation (pt), excitation eenrgy (hn), work function (wf) |
 | 1 | | Shirley BG | Initial, max iteration, # of points for simulation |
 | 2 | | Tougaard BG | B, C, C', D |
 | 3 | pg | Polynomial BG | c0, c1, c2, c3 |
