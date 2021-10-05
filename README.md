@@ -117,7 +117,7 @@ Fitting condition can be created in the BG and Fit tables. From fitting preset d
 
 > `BE = hn - wf - KE`
 
-`BE` represents the binding energy, and `KE` kinetic energy. Example usage of periodic table is captured and shown below.
+`BE` represents the binding energy, and `KE` kinetic energy. The database reference and example usage of periodic table are shown below.
 
 #### BG types (`Shirley BG` to be shown as a default)
 You can choose the BG type to be subtracted from the raw data as listed below. Shirley and Tougaard BG iteration functions are available from xpypy.py, which should be located with main.py. From lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html), 3rd-order polynomial and 3 step functions are implemented. Fermi-Dirac (ThermalDistributionModel) is used for the Fermi edge fitting, and arctan and error functions (StepModel) for NEXAFS K edge BG. Polynomial function is added to the other BG models configured in the BG table, so polynomial parameters have to be taken into account for all BG optimization. You can turn off polynomial parameters by filling all zeros with turning on checkbox. Valence band maximum and secondary electron cutoff can be fitted with the 4th polynomial function for the density of states or edge jump at the onset. 
@@ -179,7 +179,20 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 You can find the VAMAS format data of various spectra from [Spectroscopy Hub](https://spectroscopyhub.com/measurements).
 
+## Database reference
+X-ray data booklet for binding energy
+- http://xdb.lbl.gov/
 
+"Hartree-Slater subshell photoionization cross-sections at 1254 and 1487 eV"
+J. H. Scofield, Journal of Electron Spectroscopy and Related Phenomena, 8129-137 (1976).
+- http://dx.doi.org/10.1016/0368-2048(76)80015-1
+- https://a-x-s.org/research/cross-sections/
 
+"Calculated Auger yields and sensitivity factors for KLL-NOO transitions with 1-10 kV primary beams"
+S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
+- http://dx.doi.org/10.1116/1.572933
+- http://www.materialinterface.com/wp-content/uploads/2014/11/Calculated-AES-yields-Matl-Interface.pdf
+
+(Electron beam energy at 1, 3, 5, and 10 keV for relative cross section and derivative factors)
 
 
