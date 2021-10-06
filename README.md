@@ -175,7 +175,7 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 ![Simulated spectrum](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202020-05-22%20at%201.15.35.png "Simulated spectrum")
 
-![Survey scan](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202021-10-05%20at%2021.36.26.png "Survey scan with periodic table")
+![Survey scan](https://github.com/heitler/LG4X/blob/master/Images/Screen%20Shot%202021-10-07%20at%200.03.56.png "Survey scan with periodic table")
 
 You can find the VAMAS format data of various spectra from [Spectroscopy Hub](https://spectroscopyhub.com/measurements).
 
