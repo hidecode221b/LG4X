@@ -362,6 +362,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 			self.setPreset(4, pre_bg, pre_pk)
 		if index == 7:
 			self.pt.show()
+			if self.pt.isActiveWindow() == False:
+				self.pt.close()
+				self.pt.show()
 
 		self.comboBox_pres.setCurrentIndex(0)
 		self.fitp1.resizeColumnsToContents()
@@ -723,24 +726,26 @@ class PrettyWidget(QtWidgets.QMainWindow):
 							en = float(obj.alka['be'][orb])
 						else:
 							en = pe - wf - float(obj.alka['be'][orb])
-						elem_x = np.asarray([en])
-						elem_y = np.asarray([float(obj.alka['rsf'][orb])])
-						elem_z = obj.alka['trans'][orb]
-						#print(elem_x, elem_y, elem_z)
-						#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/60, obj.symbol+elem_z, color="r", rotation="vertical")
-						self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10)/2, obj.symbol+elem_z, color="r", rotation="vertical")
+						if (xmin > xmax and en < xmin and en > xmax) or (xmin < xmax and en>xmin and en <xmax):
+							elem_x = np.asarray([en])
+							elem_y = np.asarray([float(obj.alka['rsf'][orb])])
+							elem_z = obj.alka['trans'][orb]
+							#print(elem_x, elem_y, elem_z)
+							#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/60, obj.symbol+elem_z, color="r", rotation="vertical")
+							self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10)/2, obj.symbol+elem_z, color="r", rotation="vertical")
 				if len(obj.aes['trans']) > 0:                                                                                                                          
 					for orb in range(len(obj.aes['trans'])):
 						if xmin > xmax:
 							en = pe - wf - float(obj.aes['ke'][orb])
 						else:
 							en = float(obj.aes['ke'][orb])
-						elem_x = np.asarray([en])
-						elem_y = np.asarray([float(obj.aes['rsf'][orb])])
-						elem_z = obj.aes['trans'][orb]
-						#print(elem_x, elem_y, elem_z)
-						#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/6, obj.symbol+elem_z, color="g", rotation="vertical")
-						self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10), obj.symbol+elem_z, color="g", rotation="vertical")
+						if (xmin > xmax and en < xmin and en > xmax) or (xmin < xmax and en>xmin and en <xmax):
+							elem_x = np.asarray([en])
+							elem_y = np.asarray([float(obj.aes['rsf'][orb])])
+							elem_z = obj.aes['trans'][orb]
+							#print(elem_x, elem_y, elem_z)
+							#self.ax.text(elem_x, ymin+(ymax-ymin)*elem_y/6, obj.symbol+elem_z, color="g", rotation="vertical")
+							self.ax.text(elem_x, ymin+(ymax-ymin)*math.log(elem_y+1, 10), obj.symbol+elem_z, color="g", rotation="vertical")
 				                               
 			self.canvas.draw()
 			self.repaint()
@@ -1409,7 +1414,10 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		elif not checked:
 			self.pt.selectedElements.remove(elementObject)
 		self.plot_pt()	
-			
+	
+	def closeEvent(self, event):
+		event.accept()
+		sys.exit(0)	
 
 if __name__ == '__main__':
 	app = QtWidgets.QApplication(sys.argv)
