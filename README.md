@@ -125,12 +125,12 @@ You can choose the BG type to be subtracted from the raw data as listed below. S
 | No. | String | BG model | Parameters |
 | --- | --- | --- | --- |
 | 0 | | | `x_min`, `x_max` for fitting range, data points in simulation `pt`, `hn`, `wf` |
-| 1 | | Shirley BG | Initial A, max iteration number |
-| 2 | | Tougaard BG | B, C, C', D |
-| 3 | pg | Polynomial BG | c0, c1, c2, c3 |
-| 4 | bg | Fermi-Dirac BG | amplitude, center, kt |
-| 5 | bg | Arctan BG | amplitude, center, sigma |
-| 6 | bg | Error BG | amplitude, center, sigma |
+| 1 | | Shirley BG | Initial `cv`, max iteration number `it` |
+| 2 | | Tougaard BG | `B`, `C`, `C'`, `D` |
+| 3 | pg | [Polynomial BG](https://lmfit.github.io/lmfit-py/builtin_models.html#polynomialmodel) | c0, c1, c2, c3 |
+| 4 | bg | [Fermi-Dirac BG](https://lmfit.github.io/lmfit-py/builtin_models.html#thermaldistributionmodel) | amplitude, center, kt |
+| 5 | bg | [Arctan BG](https://lmfit.github.io/lmfit-py/builtin_models.html#stepmodel) | amplitude, center, sigma |
+| 6 | bg | [Error BG](https://lmfit.github.io/lmfit-py/builtin_models.html#stepmodel) | amplitude, center, sigma |
 | 7 | bg | VBM/cutoff | center, d1, d2, d3, d4 |
 
 ### Tables
@@ -143,16 +143,16 @@ All conditions are based on the lmfit [built-in models](https://lmfit.github.io/
 
 | No. | String | Peak model | Parameters |
 | --- | --- | --- | --- |
-| 1 | g | GaussianModel | amplitude`amp`, center`ctr`, sigma`sig` |
-| 2 | l | LorentzianModel | amplitude, center, sigma |
-| 3 | v | VoigtModel | amplitude, center, sigma, gamma`gam` |
-| 4 | p | PseudoVoigtModel | amplitude, center, sigma, fraction`frac` |
-| 5 | e | ExponentialGaussianModel | amplitude, center, sigma, gamma |
-| 6 | s | SkewedGaussianModel | amplitude, center, sigma, gamma |
-| 7 | a | SkewedVoigtModel | amplitude, center, sigma, gamma, `skew` |
-| 8 | b | BreitWignerModel | amplitude, center, sigma, `q` |
-| 9 | n | LognormalModel | amplitude, center, sigma |
-| 10 | d | DoniachModel | amplitude, center, sigma, gamma |
+| 1 | g | [GaussianModel](https://lmfit.github.io/lmfit-py/builtin_models.html#gaussianmodel) | amplitude`amp`, center`ctr`, sigma`sig` |
+| 2 | l | [LorentzianModel](https://lmfit.github.io/lmfit-py/builtin_models.html#lorentzianmodel) | amplitude, center, sigma |
+| 3 | v | [VoigtModel](https://lmfit.github.io/lmfit-py/builtin_models.html#voigtmodel) | amplitude, center, sigma, gamma`gam` |
+| 4 | p | [PseudoVoigtModel](https://lmfit.github.io/lmfit-py/builtin_models.html#pseudovoigtmodel) | amplitude, center, sigma, fraction`frac` |
+| 5 | e | [ExponentialGaussianModel](https://lmfit.github.io/lmfit-py/builtin_models.html#exponentialgaussianmodel) | amplitude, center, sigma, gamma |
+| 6 | s | [SkewedGaussianModel](https://lmfit.github.io/lmfit-py/builtin_models.html#skewedgaussianmodel) | amplitude, center, sigma, gamma |
+| 7 | a | [SkewedVoigtModel](https://lmfit.github.io/lmfit-py/builtin_models.html#skewedvoigtmodel) | amplitude, center, sigma, gamma, `skew` |
+| 8 | b | [BreitWignerModel](https://lmfit.github.io/lmfit-py/builtin_models.html#breitwignermodel) | amplitude, center, sigma, `q` |
+| 9 | n | [LognormalModel](https://lmfit.github.io/lmfit-py/builtin_models.html#lognormalmodel) | amplitude, center, sigma |
+| 10 | d | [DoniachModel](https://lmfit.github.io/lmfit-py/builtin_models.html#doniachmodel) | amplitude, center, sigma, gamma |
 
 ##### Amplitude ratio and energy difference
 XPS doublet peaks are splitted by the spin-orbit coupling based on the atomic theory. Spin-orbit interaction depends on the atomic element and its orbit. The energy separation of doublet corresponds to the spin-orbit constant. Amplitude ratio of doublet is based on the degeneracy (2*j*+1) of each total angular quantum number (*j*). LG4X constrains `amp_ratio` and `ctr_diff` from a reference peak `amp_ref` and `ctr_ref` selected by dropdown menus. For example, Ag3*d* has *j*=5/2 and 3/2, and their amplitude ratio corresponds to 3:2. You can setup second peak amplitude ratio by selecting the first peak at *j*=5/2 and `amp_ratio` = 0.67. This means that amplitude of second peak at *j*=3/2 is constrained by a factor of 0.67 against that of first peak. Peak difference parameter also works in a way that second peak position is away from first peak `ctr_ref` by `ctr_diff` = 6 eV as shown in the figure below. 
