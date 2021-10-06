@@ -117,7 +117,7 @@ Fitting condition can be created in the BG and Fit tables. From fitting preset d
 
 > `BE = hn - wf - KE`
 
-`BE` represents the binding energy, and `KE` kinetic energy. The database reference and example usage of periodic table are shown below.
+`BE` represents the binding energy, and `KE` kinetic energy. The database reference and example usage of periodic table are shown below. `Refresh` button enables us to display elements in the other dataset, and `Clear` button removes all elements.
 
 #### BG types (`Shirley BG` to be shown as a default)
 You can choose the BG type to be subtracted from the raw data as listed below. Shirley and Tougaard BG iteration functions are available from xpypy.py, which should be located with main.py. From lmfit [built-in models](https://lmfit.github.io/lmfit-py/builtin_models.html), 3rd-order polynomial and 3 step functions are implemented. Fermi-Dirac (ThermalDistributionModel) is used for the Fermi edge fitting, and arctan and error functions (StepModel) for NEXAFS K edge BG. Polynomial function is added to the other BG models configured in the BG table, so polynomial parameters have to be taken into account for all BG optimization. You can turn off polynomial parameters by filling all zeros with turning on checkbox. Valence band maximum and secondary electron cutoff can be fitted with the 4th polynomial function for the density of states or edge jump at the onset. 
