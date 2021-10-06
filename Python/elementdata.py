@@ -2,6 +2,16 @@ class ElementData:
 	def __init__(self):
 		self.xps = [
 			{
+				'symbol': 'Refresh',
+				'alka': {'trans': [], 'be': [], 'rsf': []},
+				'aes': {'trans': [], 'ke': [], 'rsf': []}
+			},
+			{
+				'symbol': 'Clear',
+				'alka': {'trans': [], 'be': [], 'rsf': []},
+				'aes': {'trans': [], 'ke': [], 'rsf': []}
+			},
+			{
 				'symbol': 'H',
 				'alka': {'trans': ['1s'], 'be': [13.6], 'rsf': [.0002]},
 				'aes': {'trans': [], 'ke': [], 'rsf': []}

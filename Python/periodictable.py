@@ -19,10 +19,9 @@ class PeriodicTable(QWidget):
         # Element Objects
         self.elements = ElementData().xps
         self.periodicTable = {}
-        self.selectedElements = []
+        #self.selectedElements = []
 
         for element in self.elements:
-            #self.periodicTable[element['symbol']] = Element(element['mass'], element['symbol'], element['name'], element['number'], element['alka'])
             self.periodicTable[element['symbol']] = Transition(element['symbol'], element['alka'], element['aes'])
             #print(element['symbol'])
 
@@ -34,6 +33,12 @@ class PeriodicTable(QWidget):
             if 'ebtn' in name:
                 btn = getattr(self.ui, name)
                 btn.clicked[bool].connect(self.emitElement)
+            elif 'Clear' in name:
+                btn = getattr(self.ui, name)
+                btn.clicked.connect(self.emitElement)
+            elif 'Refresh' in name:
+                btn = getattr(self.ui, name)
+                btn.clicked.connect(self.emitElement)
 
     # Slot for element button clicked signal
     # Emits custom signal with elemental symbol and boolean
@@ -41,6 +46,13 @@ class PeriodicTable(QWidget):
         symbol = self.sender().text()
         elementObject = self.periodicTable[symbol]
         self.elementEmitted.emit(elementObject, checked)
+
+        if symbol == 'Clear':
+            for name in dir(self.ui):
+                # Element buttons:
+                if 'ebtn' in name:
+                    btnc = getattr(self.ui, name)
+                    btnc.setChecked(False)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

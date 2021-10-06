@@ -28,9 +28,9 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.080'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.081'
 		self.floating = '.2f'
-		self.setGeometry(600,300, 1100, 700)
+		self.setGeometry(600,300, 1200, 700)
 		self.center()
 		self.setWindowTitle(self.version)     
 		self.statusBar().showMessage('Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
@@ -683,8 +683,10 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.comboBox_imp.setCurrentIndex(0)
 
 	def plot_pt(self):
+		#peak elements from periodic table window selection
 		#print('before', len(self.ax.texts))
-		if len(self.ax.texts) > 0:
+		
+		while len(self.ax.texts) > 0:
 			for txt in self.ax.texts:
 				txt.remove()
 			self.canvas.draw()
@@ -699,9 +701,17 @@ class PrettyWidget(QtWidgets.QMainWindow):
 				else:
 					pe = 1486.6
 					wf = 4
+					item = QtWidgets.QTableWidgetItem(str(pe))
+					self.fitp0.setItem(0, 7, item)
+					item = QtWidgets.QTableWidgetItem(str(wf))
+					self.fitp0.setItem(0, 9, item)
 			else:
 				pe = 1486.6
 				wf = 4
+				item = QtWidgets.QTableWidgetItem(str(pe))
+				self.fitp0.setItem(0, 7, item)
+				item = QtWidgets.QTableWidgetItem(str(wf))
+				self.fitp0.setItem(0, 9, item)
 			ymin, ymax = self.ax.get_ylim()
 			xmin, xmax = self.ax.get_xlim()
 			#print(xmin,xmax)
@@ -1390,7 +1400,11 @@ class PrettyWidget(QtWidgets.QMainWindow):
 
 	def handleElementClicked(self, elementObject, checked):
 		symbol = elementObject.symbol
-		if checked and elementObject not in self.pt.selectedElements:
+		if symbol == 'Clear':
+			self.pt.selectedElements = []
+		elif symbol == 'Refresh':
+			pass
+		elif checked and elementObject not in self.pt.selectedElements:
 			self.pt.selectedElements.append(elementObject)
 		elif not checked:
 			self.pt.selectedElements.remove(elementObject)
