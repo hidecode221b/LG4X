@@ -99,7 +99,7 @@ You can add and remove peak at the end of column from the Fit table.
 ### Drop-down menus
 
 #### Importing data
-LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
+LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Example data files are available in [Example](https://github.com/hidecode221b/LG4X/tree/master/Example). Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
 
 VAMAS file format can also be imported in LG4X by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use LG4X to convert the VAMAS file into tab separated text files for the other program you prefer. Note that the binding energy scale is automatically created from VAMAS for XPS and UPS data.
 
@@ -195,4 +195,6 @@ S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
 
 (Electron beam energy at 1, 3, 5, and 10 keV for relative cross section and derivative factors)
 
+## Citing
+[https://doi.org/10.5281/zenodo.3901523](https://doi.org/10.5281/zenodo.3901523)
 
