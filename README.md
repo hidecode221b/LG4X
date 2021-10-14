@@ -76,6 +76,17 @@ The OS dependence of installation of python, pip, and brew is described in the [
     - Export text file for parameters
     - Save parameters as a preset for next analysis
 
+## Home directory to import data
+
+You can change the HOME directory in the main.py edited in a way below. `#` makes a line comment out. 
+
+> `# Home directory`
+> 
+> `self.filePath = QtCore.QDir.homePath()`
+> 
+> `# self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'`
+
+
 ## Interface design
 
 An initial gui concept is taken from [here](http://songhuiming.github.io/pages/2016/05/31/read-in-csv-and-plot-with-matplotlib-in-pyqt4/) and [there](https://stackoverflow.com/questions/47964897/how-to-graph-from-a-csv-file-using-matpotlib-and-pyqt5).
@@ -197,4 +208,7 @@ S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
 
 ## Citing
 [https://doi.org/10.5281/zenodo.3901523](https://doi.org/10.5281/zenodo.3901523)
+
+## Video
+[YouTube: Introduction of LG4X](https://youtu.be/cDXXXBfWU1w)
 
