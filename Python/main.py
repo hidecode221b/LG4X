@@ -28,7 +28,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		self.initUI()
 
 	def initUI(self):
-		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.081'
+		self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.082'
 		self.floating = '.2f'
 		self.setGeometry(600,300, 1200, 700)
 		self.center()
@@ -49,8 +49,8 @@ class PrettyWidget(QtWidgets.QMainWindow):
 		widget.setLayout(grid)
 		
 		# Home directory
-		#self.filePath = QtCore.QDir.homePath()
-		self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'
+		self.filePath = QtCore.QDir.homePath()
+		#self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'
 		
 		# Figure: Canvas and Toolbar
 		#self.figure = plt.figure(figsize=(6.7,5))
