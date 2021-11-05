@@ -236,6 +236,6 @@ S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
 
 [YouTube: Introduction of LG4X](https://youtu.be/cDXXXBfWU1w)
 
-[YouTube: Installation of LG4X in minoconda3 environment](https://youtu.be/cEbo6ZHlK-U)
+[YouTube: Installation of LG4X in miniconda3 environment](https://youtu.be/cEbo6ZHlK-U)
 
 
