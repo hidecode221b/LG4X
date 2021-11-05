@@ -107,6 +107,35 @@ You can change the HOME directory in the main.py edited in a way below. `#` make
 > `self.filePath = QtCore.QDir.homePath()`
 > 
 > `# self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'`
+> 
+
+
+## Citing
+
+[https://doi.org/10.5281/zenodo.3901523](https://doi.org/10.5281/zenodo.3901523)
+
+## Video
+
+[YouTube: Introduction of LG4X](https://youtu.be/cDXXXBfWU1w)
+
+[YouTube: Installation of LG4X in miniconda3 environment](https://youtu.be/cEbo6ZHlK-U)
+
+
+## Database reference
+X-ray data booklet for binding energy
+- http://xdb.lbl.gov/
+
+"Hartree-Slater subshell photoionization cross-sections at 1254 and 1487 eV"
+J. H. Scofield, Journal of Electron Spectroscopy and Related Phenomena, 8129-137 (1976).
+- http://dx.doi.org/10.1016/0368-2048(76)80015-1
+- https://a-x-s.org/research/cross-sections/
+
+"Calculated Auger yields and sensitivity factors for KLL-NOO transitions with 1-10 kV primary beams"
+S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
+- http://dx.doi.org/10.1116/1.572933
+- http://www.materialinterface.com/wp-content/uploads/2014/11/Calculated-AES-yields-Matl-Interface.pdf
+
+(Electron beam energy at 1, 3, 5, and 10 keV for relative cross section and derivative factors)
 
 
 ## Interface design
@@ -212,30 +241,6 @@ A comprehensive review on XPS technique and analytical procedures is available i
 
 You can find the VAMAS format data of various spectra from [Spectroscopy Hub](https://spectroscopyhub.com/measurements).
 
-## Database reference
-X-ray data booklet for binding energy
-- http://xdb.lbl.gov/
 
-"Hartree-Slater subshell photoionization cross-sections at 1254 and 1487 eV"
-J. H. Scofield, Journal of Electron Spectroscopy and Related Phenomena, 8129-137 (1976).
-- http://dx.doi.org/10.1016/0368-2048(76)80015-1
-- https://a-x-s.org/research/cross-sections/
-
-"Calculated Auger yields and sensitivity factors for KLL-NOO transitions with 1-10 kV primary beams"
-S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
-- http://dx.doi.org/10.1116/1.572933
-- http://www.materialinterface.com/wp-content/uploads/2014/11/Calculated-AES-yields-Matl-Interface.pdf
-
-(Electron beam energy at 1, 3, 5, and 10 keV for relative cross section and derivative factors)
-
-## Citing
-
-[https://doi.org/10.5281/zenodo.3901523](https://doi.org/10.5281/zenodo.3901523)
-
-## Video
-
-[YouTube: Introduction of LG4X](https://youtu.be/cDXXXBfWU1w)
-
-[YouTube: Installation of LG4X in miniconda3 environment](https://youtu.be/cEbo6ZHlK-U)
 
 
