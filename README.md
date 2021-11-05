@@ -229,10 +229,13 @@ S. Mroczkowski and D. Lichtman, J. Vac. Sci. Technol. A 3, 1860 (1985).
 (Electron beam energy at 1, 3, 5, and 10 keV for relative cross section and derivative factors)
 
 ## Citing
+
 [https://doi.org/10.5281/zenodo.3901523](https://doi.org/10.5281/zenodo.3901523)
 
 ## Video
+
 [YouTube: Introduction of LG4X](https://youtu.be/cDXXXBfWU1w)
+
 [YouTube: Installation of LG4X in minoconda3 environment](https://youtu.be/cEbo6ZHlK-U)
 
 
