@@ -24,11 +24,33 @@ Download and install [Python 3](https://www.python.org/) and additional packages
 
 The OS dependence of installation of python, pip, and brew is described in the [link](https://appdividend.com/2020/04/22/how-to-upgrade-pip-in-mac-update-pip-on-windows-and-linux/).
 
-### Update package if necessary
+#### Update package if necessary
 
 > `pip3 install --upgrade lmfit`
 
-### Supplementary codes for XPS analysis
+#### Miniconda3
+
+If you have Miniconda3, you can create the environment to install lmfit from [conda-forge](https://github.com/conda-forge/lmfit-feedstock). Below is an example for environment name *vpy3.9* on python version 3.9.
+
+> `conda config --add channels conda-forge`
+>
+> `conda config --set channel_priority strict`
+>
+> `conda create -n vpy3.9 python=3.9`
+>
+> `conda activate vpy3.9`
+>
+> `conda install lmfit`
+>
+> `conda install matplotlib`
+>
+> `conda install pandas`
+> 
+> `python main.python`
+>
+
+
+#### Supplementary codes for XPS analysis
 
 [xpspy.py](https://github.com/heitler/LG4X/blob/master/Python/xpspy.py) should be located in the same directory as [main.py](https://github.com/heitler/LG4X/blob/master/Python/main.py) for XPS energy range selection for background (BG) subtraction in Shirley and Tougaard methods, which are taken from codes by [Kane O'Donnell](https://github.com/kaneod/physics/blob/master/python/specs.py) and [James Mudd](https://warwick.ac.uk/fac/sci/physics/research/condensedmatt/surface/people/james_mudd/igor/).
 
@@ -42,7 +64,7 @@ The OS dependence of installation of python, pip, and brew is described in the [
 
 > `python3 main.py`
 
-### Testing and developing environment
+#### Testing and developing environment
 
 * Python 3.9.5
 * asteval==0.9.23
@@ -76,7 +98,7 @@ The OS dependence of installation of python, pip, and brew is described in the [
     - Export text file for parameters
     - Save parameters as a preset for next analysis
 
-## Home directory to import data
+#### Home directory to import data
 
 You can change the HOME directory in the main.py edited in a way below. `#` makes a line comment out. 
 
