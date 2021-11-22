@@ -30,7 +30,7 @@ The OS dependence of installation of python, pip, and brew is described in the [
 
 #### Miniconda3
 
-If you have Miniconda3, you can create the environment to install lmfit from [conda-forge](https://github.com/conda-forge/lmfit-feedstock). Below is an example for environment name *vpy3.9* on python version 3.9.
+If you have Miniconda3, you can create the environment to install lmfit from [conda-forge](https://github.com/conda-forge/lmfit-feedstock). Below is an example for environment name *vpy3.9* on python version 3.9 ([YouTube video](https://youtu.be/cEbo6ZHlK-U)). 
 
 > `conda config --add channels conda-forge`
 >
