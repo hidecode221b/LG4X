@@ -1,0 +1,31 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: LG4X
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Hideki
+    family-names: Nakajima
+    email: hideki@slri.or.th
+    affiliation: >-
+      Synchrotron Light Research Institute (Public
+      Organization)
+    orcid: 'https://orcid.org/0000-0001-9167-1288'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.3901523
+repository-code: 'https://github.com/hidecode221b/LG4X'
+abstract: >-
+  LG4X provides a graphical user interface for XPS curve
+  fitting analysis based on the lmfit package, the
+  non-linear least-square minimization method on the python
+  platform.
+keywords:
+  - XPS
+license: MIT
+version: '0.081'
+date-released: '2020-06-19'
