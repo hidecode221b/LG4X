@@ -3,7 +3,7 @@
 # LG4X: lmfit GUI for XPS
 
 ## Preface
-Now, the extended version (LG4X-V2) is available from [here](https://github.com/Julian-Hochhaus/LG4X-V2) upgraded by Dr. Julian Hochhaus. Thanks, Julian. After the WFH period under the covid situation, I have no time to focus on the development of this code (28 Mar. 2023).
+Now, the extended version (LG4X-V2) is available from [here](https://github.com/Julian-Hochhaus/LG4X-V2) upgraded by [Julian Hochhaus](https://github.com/Julian-Hochhaus/). Thanks, Julian. After the WFH period under the covid situation, I have no time to focus on the development of this code (28 Mar. 2023).
 
 
 ## Introduction
