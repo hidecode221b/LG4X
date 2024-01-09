@@ -1300,7 +1300,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
                     pktar = self.fitp1.cellWidget(8, 2*index_pk+1).currentIndex()
                     strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
                     strtar = strtar[0]
-                    if self.fitp1.item(9, 2*index_pk+1) != None:
+                    if self.fitp1.item(9, 2*index_pk+1) != None and pktar != index_pk+1:
                         if len(self.fitp1.item(9, 2*index_pk+1).text()) > 0:
                             rtotar = float(self.fitp1.item(9, 2*index_pk+1).text())
                             pars[strind + str(index_pk+1) + '_amplitude'].expr = strtar + str(pktar) + '_amplitude * ' + str(rtotar)
@@ -1310,7 +1310,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
                     pktar = self.fitp1.cellWidget(10, 2*index_pk+1).currentIndex()
                     strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
                     strtar = strtar[0]
-                    if self.fitp1.item(11, 2*index_pk+1) != None:
+                    if self.fitp1.item(11, 2*index_pk+1) != None and pktar != index_pk+1:
                         if len(self.fitp1.item(11, 2*index_pk+1).text()) > 0:
                             diftar = float(self.fitp1.item(11, 2*index_pk+1).text())
                             pars[strind + str(index_pk+1) + '_center'].expr = strtar + str(pktar) + '_center + ' + str(diftar)
