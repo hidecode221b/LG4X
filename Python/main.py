@@ -30,15 +30,16 @@ class PrettyWidget(QtWidgets.QMainWindow):
         self.initUI()
 
     def initUI(self):
-        self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.083'
+        self.version = 'LG4X: lmfit gui for xps curve fitting ver. 0.084'
         self.floating = '.2f'
 
-        # default window width 1400 (effective to BG and peak tables)
-        # default window height 800 (effective to plot and peak tables)
         # window size can be adjustable in window_scale factor, default: 1
         window_scale = 1
-
+        # column width in the fit table, default: 55
+        self.fitpColWidth = 55
+        # default window width 1400, height 800
         self.setGeometry(300, 600, int(1400 * window_scale), int(800 * window_scale))
+        
         self.center()
         self.setWindowTitle(self.version)     
         self.statusBar().showMessage('Copyright (C) 2021, Hideki NAKAJIMA, Synchrotron Light Research Institute, Nakhon Ratchasima, Thailand')
@@ -186,21 +187,21 @@ class PrettyWidget(QtWidgets.QMainWindow):
         for col in range(len(list_col)):
             comboBox = QtWidgets.QComboBox()
             comboBox.addItems(self.list_shape)
-            #comboBox.setMaximumWidth(55)
+            #comboBox.setMaximumWidth(self.fitpColWidth)
             self.fitp1.setCellWidget(0, 2*col+1, comboBox)
 
         # set DropDown amp_ref peak section
         for col in range(len(list_col)):
             comboBox = QtWidgets.QComboBox()
             comboBox.addItems(self.list_peak)
-            comboBox.setMaximumWidth(55)
+            comboBox.setMaximumWidth(self.fitpColWidth)
             self.fitp1.setCellWidget(8, 2*col+1, comboBox)
 
         # set DropDown ctr_ref peak selection
         for col in range(len(list_col)):
             comboBox = QtWidgets.QComboBox()
             comboBox.addItems(self.list_peak)
-            comboBox.setMaximumWidth(55)
+            comboBox.setMaximumWidth(self.fitpColWidth)
             self.fitp1.setCellWidget(10, 2*col+1, comboBox)
 
         # set checkbox in fit table
@@ -235,7 +236,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
         # add DropDown peak model
         comboBox = QtWidgets.QComboBox()
         comboBox.addItems(self.list_shape)
-        #comboBox.setMaximumWidth(55)
+        #comboBox.setMaximumWidth(self.fitpColWidth)
         self.fitp1.setCellWidget(0, colPosition+1, comboBox)
         
         # setup new peak parameters (initial and additional)
@@ -266,7 +267,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
                 index = 0
             comboBox= QtWidgets.QComboBox()
             comboBox.addItems(self.list_peak)
-            comboBox.setMaximumWidth(55)
+            comboBox.setMaximumWidth(self.fitpColWidth)
             self.fitp1.setCellWidget(8, 2*col+1, comboBox)
             if index > 0 and col < int(colPosition/2):
                 comboBox.setCurrentIndex(index)
@@ -278,7 +279,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
                 index = 0
             comboBox = QtWidgets.QComboBox()
             comboBox.addItems(self.list_peak)
-            comboBox.setMaximumWidth(55)
+            comboBox.setMaximumWidth(self.fitpColWidth)
             self.fitp1.setCellWidget(10, 2*col+1, comboBox)
             if index > 0 and col < int(colPosition/2):
                 comboBox.setCurrentIndex(index)
@@ -415,7 +416,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
 
         # load preset for bg
         if len(list_pre_bg) != 0 and self.addition == 0:
-            for  row in range(len(list_pre_bg)):
+            for row in range(len(list_pre_bg)):
                 for col in range(len(list_pre_bg[0])):
                     if (col % 2) != 0:
                         item = QtWidgets.QTableWidgetItem(str(list_pre_bg[row][col]))
@@ -447,12 +448,13 @@ class PrettyWidget(QtWidgets.QMainWindow):
                 for col in range(int(len(list_pre_pk[0])/2)):
                         self.add_col()
 
-        for  row in range(len(list_pre_pk)):
+        for row in range(len(list_pre_pk)):
             for col in range(len(list_pre_pk[0])):
                 if (col % 2) != 0:
                     if row == 0 or row == 8 or row == 10:
                         comboBox = QtWidgets.QComboBox()
                         if row == 0:
+                            comboBox.setMaximumWidth(self.fitpColWidth) # set the width of column when preset is loaded
                             comboBox.addItems(self.list_shape)
                         else:
                             comboBox.addItems(self.list_peak)
@@ -536,7 +538,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
         colPosition = self.fitp0.columnCount()
         list_pre_bg = []
         # save preset for bg
-        for  row in range(rowPosition):
+        for row in range(rowPosition):
             new = []
             for col in range(colPosition):
                 if (col % 2) != 0:
@@ -561,7 +563,7 @@ class PrettyWidget(QtWidgets.QMainWindow):
         colPosition = self.fitp1.columnCount()
         list_pre_pk = []
         # save preset for peaks
-        for  row in range(rowPosition):
+        for row in range(rowPosition):
             new = []
             for col in range(colPosition):
                 if (col % 2) != 0:
@@ -1300,20 +1302,35 @@ class PrettyWidget(QtWidgets.QMainWindow):
                     pktar = self.fitp1.cellWidget(8, 2*index_pk+1).currentIndex()
                     strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
                     strtar = strtar[0]
-                    if self.fitp1.item(9, 2*index_pk+1) != None:
-                        if len(self.fitp1.item(9, 2*index_pk+1).text()) > 0:
-                            rtotar = float(self.fitp1.item(9, 2*index_pk+1).text())
-                            pars[strind + str(index_pk+1) + '_amplitude'].expr = strtar + str(pktar) + '_amplitude * ' + str(rtotar)
-    
+                    # check self referenced because of recursionError
+                    if pktar == index_pk+1:
+                        print(2*index_pk+1, "column")
+                        comboBox = QtWidgets.QComboBox()
+                        comboBox.addItems(self.list_peak)
+                        self.fitp1.setCellWidget(8, 2*index_pk+1, comboBox)
+                        comboBox.setCurrentIndex(0) # set zero
+                    else:
+                        if self.fitp1.item(9, 2*index_pk+1) != None:
+                            if len(self.fitp1.item(9, 2*index_pk+1).text()) > 0:
+                                rtotar = float(self.fitp1.item(9, 2*index_pk+1).text())
+                                pars[strind + str(index_pk+1) + '_amplitude'].expr = strtar + str(pktar) + '_amplitude * ' + str(rtotar)
+
                 # BE diff setup
                 if self.fitp1.cellWidget(10, 2*index_pk+1).currentIndex() > 0:
                     pktar = self.fitp1.cellWidget(10, 2*index_pk+1).currentIndex()
                     strtar = self.fitp1.cellWidget(0, 2*pktar-1).currentText()
                     strtar = strtar[0]
-                    if self.fitp1.item(11, 2*index_pk+1) != None:
-                        if len(self.fitp1.item(11, 2*index_pk+1).text()) > 0:
-                            diftar = float(self.fitp1.item(11, 2*index_pk+1).text())
-                            pars[strind + str(index_pk+1) + '_center'].expr = strtar + str(pktar) + '_center + ' + str(diftar)
+                    # check self referenced because of recursionError
+                    if pktar == index_pk+1:
+                        comboBox = QtWidgets.QComboBox()
+                        comboBox.addItems(self.list_peak)
+                        self.fitp1.setCellWidget(10, 2*index_pk+1, comboBox)
+                        comboBox.setCurrentIndex(0)
+                    else:
+                        if self.fitp1.item(11, 2*index_pk+1) != None:
+                            if len(self.fitp1.item(11, 2*index_pk+1).text()) > 0:
+                                diftar = float(self.fitp1.item(11, 2*index_pk+1).text())
+                                pars[strind + str(index_pk+1) + '_center'].expr = strtar + str(pktar) + '_center + ' + str(diftar)
 
         # evaluate model and optimize parameters for fitting in lmfit
         init = mod.eval(pars, x=x)
