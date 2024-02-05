@@ -14,7 +14,7 @@ LG4X provides a graphical user interface for [XPS](https://en.wikipedia.org/wiki
 ## Methods
 ### Installation
 
-Download and install [Python 3](https://www.python.org/) and additional packages.
+Download and install [Python 3](https://www.python.org/) or [brew](https://brew.sh/) and additional packages.
 
 > `brew install python3`
 >
