@@ -20,7 +20,7 @@ Download and install [Python 3](https://www.python.org/) or [brew](https://brew.
 >
 > `pip3 install lmfit`
 >
-> `pip3 install pandas`
+> `pip3 install pandas` (+ `pip3 install pyarrow`)
 >
 > `pip3 install matplotlib`
 >
