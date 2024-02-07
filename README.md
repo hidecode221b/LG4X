@@ -8,50 +8,43 @@ Now, the extended version (LG4X-V2) is available from [here](https://github.com/
 
 ## Introduction
 
-LG4X provides a graphical user interface for [XPS](https://en.wikipedia.org/wiki/X-ray_photoelectron_spectroscopy) curve fitting analysis based on the [lmfit](https://pypi.org/project/lmfit/) package, which is the non-linear least-square minimization method on python platform. LG4X facilitates the curve fitting analysis for python beginners. LG4X was developed on [Python 3](https://www.python.org/), and [PyQt5](https://pypi.org/project/PyQt5/) was used for its graphical interface design. [Shirley](https://doi.org/10.1103/PhysRevB.5.4709) and [Tougaard](https://doi.org/10.1002/sia.740110902) iterated methods are implemented as a supplementary code for XPS background subtraction. LG4X tidies up all fitting parameters with their bound conditions in table forms. Fitting parameters can be imported and exported as a preset file before and after analysis to streamline the fitting procedures. Fitting results are also exported as a text for parameters and csv file for spectral data. In addition, LG4X simulates the curve without importing data and evaluates the initial parameters over the data plot prior to optimization.
+**LG4X** provides a graphical user interface for [XPS](https://en.wikipedia.org/wiki/X-ray_photoelectron_spectroscopy) curve fitting analysis based on the [lmfit](https://pypi.org/project/lmfit/) package, which is the non-linear least-square minimization method on python platform. **LG4X** facilitates the curve fitting analysis for python beginners. **LG4X** was developed on [Python 3](https://www.python.org/), and [PyQt5](https://pypi.org/project/PyQt5/) was used for its graphical interface design. [Shirley](https://doi.org/10.1103/PhysRevB.5.4709) and [Tougaard](https://doi.org/10.1002/sia.740110902) iterated methods are implemented as a supplementary code for XPS background subtraction. **LG4X** tidies up all fitting parameters with their bound conditions in table forms. Fitting parameters can be imported and exported as a preset file before and after analysis to streamline the fitting procedures. Fitting results are also exported as a text for parameters and csv file for spectral data. In addition, **LG4X** simulates the curve without importing data and evaluates the initial parameters over the data plot prior to optimization.
 
 
 ## Methods
 ### Installation
 
 Install [Python 3](https://www.python.org/) or [brew](https://brew.sh/), and [pip](https://pip.pypa.io/en/stable/installation/) additional packages.
-
-> `brew install python3`
->
-> `pip3 install lmfit`
->
-> `pip3 install pandas` (+ `pip3 install pyarrow`)
->
-> `pip3 install matplotlib`
->
-> `pip3 install PyQt5`
-
+```
+brew install python3
+pip3 install lmfit
+pip3 install pandas
+pip3 install pyarrow
+pip3 install matplotlib
+pip3 install PyQt5
+```
 The OS dependence of installation of python, pip, and brew is described in the [link](https://appdividend.com/2020/04/22/how-to-upgrade-pip-in-mac-update-pip-on-windows-and-linux/).
 
 #### Update package if necessary
 
-> `pip3 install --upgrade lmfit`
+```
+pip3 install --upgrade lmfit
+```
 
 #### Miniconda3
 
 If you have Miniconda3, you can create the environment to install lmfit from [conda-forge](https://github.com/conda-forge/lmfit-feedstock). Below is an example for environment name *vpy3.9* on python version 3.9 ([YouTube video](https://youtu.be/cEbo6ZHlK-U)). 
 
-> `conda config --add channels conda-forge`
->
-> `conda config --set channel_priority strict`
->
-> `conda create -n vpy3.9 python=3.9`
->
-> `conda activate vpy3.9`
->
-> `conda install lmfit`
->
-> `conda install matplotlib`
->
-> `conda install pandas`
-> 
-> `python main.python`
->
+```
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+conda create -n vpy3.9 python=3.9
+conda activate vpy3.9
+conda install lmfit
+conda install matplotlib
+conda install pandas
+python main.python
+```
 
 
 #### Supplementary codes for XPS analysis
@@ -66,7 +59,9 @@ If you have Miniconda3, you can create the environment to install lmfit from [co
 
 ### Start LG4X
 
-> `python3 main.py`
+```
+python3 main.py
+```
 
 #### Testing and developing environment
 
@@ -106,12 +101,11 @@ If you have Miniconda3, you can create the environment to install lmfit from [co
 
 You can change the HOME directory in the main.py edited in a way below. `#` makes a line comment out. 
 
-> `# Home directory`
-> 
-> `self.filePath = QtCore.QDir.homePath()`
-> 
-> `# self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'`
-> 
+```
+# Home directory
+self.filePath = QtCore.QDir.homePath()
+# self.filePath = '/Users/hidekinakajima/Desktop/WFH2021_2/lg4x/LG4X-master/Python/'
+```
 
 
 ## Citing
@@ -157,7 +151,7 @@ You can evaluate the fitting parameters without fitting optimization on data spe
 You can optimize the fitting parameters by least-square method, and parameters in the table are updated after optimization.
 
 #### Export
-LG4X exports fitting results in two different files. One is a text file for fitting conditions `_fit.txt`, the other is a csv format file for data `_fit_csv`, which is saved at the same directory of the former file.
+**LG4X** exports fitting results in two different files. One is a text file for fitting conditions `_fit.txt`, the other is a csv format file for data `_fit_csv`, which is saved at the same directory of the former file.
 
 #### Add and rem peak
 You can add and remove peak at the end of column from the Fit table.
@@ -165,9 +159,9 @@ You can add and remove peak at the end of column from the Fit table.
 ### Drop-down menus
 
 #### Importing data
-LG4X imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. LG4X skips first row, because it is typically used for column names. Example data files are available in [Example](https://github.com/hidecode221b/LG4X/tree/master/Example). Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
+**LG4X** imports csv format or tab separated text files. A data file should contain two columns. First column is energy and second column is spectral intensity. **LG4X** skips first row, because it is typically used for column names. Example data files are available in [Example](https://github.com/hidecode221b/LG4X/tree/master/Example). Energy and instensiy are calibrated in the Excel XPS macro ([EX3ms](https://github.com/hidecode221b/xps-excel-macro)) prior to the analysis for convenience. The method of energy calibration is discussed in the [link](https://doi.org/10.1016/j.pmatsci.2019.100591). 
 
-VAMAS file format can also be imported in LG4X by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use LG4X to convert the VAMAS file into tab separated text files for the other program you prefer. Note that the binding energy scale is automatically created from VAMAS for XPS and UPS data.
+VAMAS file format can also be imported in **LG4X** by decomposing a VAMAS file into the tab separated text files based on the block and sample idenfitifers. Exported tab separated text files are available in the same directory as the VAMAS file. You can just use **LG4X** to convert the VAMAS file into tab separated text files for the other program you prefer. Note that the binding energy scale is automatically created from VAMAS for XPS and UPS data.
 
 Imported data is displayed in the figure and listed in the file list. You can also open the directory to import all csv and text files in the file list. 
 
@@ -177,11 +171,11 @@ Imported file path is added in the list. You can choose the path to import a dat
 #### Fitting preset
 Fitting condition can be created in the BG and Fit tables. From fitting preset drop-down menu, you can create the most simple single-peak preset from `New`. If you have a preset previously saved, you can `load` a preset file, which will be listed in the `Fitting preset`. Typical conditions for XPS `C1s` and `C K edge` are also available from the list as examples. A preset filename is ended with `_pars.dat`, and parameters include in the preset file as a list in the following way.
 
-> `[*BG type index*, [*BG table parameters*], [*Fit table parameters*]]`
+> [*BG type index*, [*BG table parameters*], [*Fit table parameters*]]
 
 `Periodic table` is available to identify the peak position and relative intensity based on XPS Al K&#945; excitation source (1486.6 eV). If you change the excitation energy `hn` and work function `wf`, the core-level and Auger peak energies are revised according to the equation below.
 
-> `BE = hn - wf - KE`
+> BE = hn - wf - KE
 
 `BE` represents the binding energy, and `KE` kinetic energy. The database reference and example usage of periodic table are shown below. `Refresh` button enables us to display elements in the other dataset, and `Clear` button removes all elements.
 
@@ -221,7 +215,7 @@ All conditions are based on the lmfit [built-in models](https://lmfit.github.io/
 | 10 | d | [DoniachModel](https://lmfit.github.io/lmfit-py/builtin_models.html#doniachmodel) | amplitude, center, sigma, gamma |
 
 ##### Amplitude ratio and energy difference
-XPS doublet peaks are splitted by the spin-orbit coupling based on the atomic theory. Spin-orbit interaction depends on the atomic element and its orbit. The energy separation of doublet corresponds to the spin-orbit constant. Amplitude ratio of doublet is based on the degeneracy (2*j*+1) of each total angular quantum number (*j*). LG4X constrains `amp_ratio` and `ctr_diff` from a reference peak `amp_ref` and `ctr_ref` selected by dropdown menus. For example, Ag3*d* has *j*=5/2 and 3/2, and their amplitude ratio corresponds to 3:2. You can setup second peak amplitude ratio by selecting the first peak at *j*=5/2 and `amp_ratio` = 0.67. This means that amplitude of second peak at *j*=3/2 is constrained by a factor of 0.67 against that of first peak. Peak difference parameter also works in a way that second peak position is away from first peak `ctr_ref` by `ctr_diff` = 6 eV as shown in the figure below. 
+XPS doublet peaks are splitted by the spin-orbit coupling based on the atomic theory. Spin-orbit interaction depends on the atomic element and its orbit. The energy separation of doublet corresponds to the spin-orbit constant. Amplitude ratio of doublet is based on the degeneracy (2*j*+1) of each total angular quantum number (*j*). **LG4X** constrains `amp_ratio` and `ctr_diff` from a reference peak `amp_ref` and `ctr_ref` selected by dropdown menus. For example, Ag3*d* has *j*=5/2 and 3/2, and their amplitude ratio corresponds to 3:2. You can setup second peak amplitude ratio by selecting the first peak at *j*=5/2 and `amp_ratio` = 0.67. This means that amplitude of second peak at *j*=3/2 is constrained by a factor of 0.67 against that of first peak. Peak difference parameter also works in a way that second peak position is away from first peak `ctr_ref` by `ctr_diff` = 6 eV as shown in the figure below. 
 
 Note that amplitude used in the lmfit package is equivalent to the peak area that is propoertional to the amount of element in analytical area and depth by XPS. The atomic ratio is evaluated by the peak area normalized by the sensitivity factor. The ratio of sensitivity factors on doublet peaks is the same as that in multiplicity, so the normalized peak area of one doublet peak is the same as that in other one.
 
