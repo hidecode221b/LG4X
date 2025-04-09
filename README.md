@@ -65,14 +65,14 @@ python3 main.py
 #### Testing and developing environment
 
 * Python 3.9.5
-* asteval==0.9.23
-* lmfit==1.0.2
-* matplotlib==3.4.3
-* numpy==1.20.3
-* pandas==1.3.2
-* PyQt5==5.15.4
-* scipy==1.6.3
-* uncertainties==3.1.5
+* asteval==0.9.31
+* lmfit==1.2.2
+* matplotlib==3.5.3
+* numpy==1.21.6
+* pandas==1.3.5
+* PyQt5==5.15.2
+* scipy==1.7.3
+* uncertainties==3.1.6
 
 ### Usage
 
