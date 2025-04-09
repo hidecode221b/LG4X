@@ -19,7 +19,6 @@ Install [Python 3](https://www.python.org/) or [brew](https://brew.sh/), and [pi
 brew install python3
 pip3 install lmfit
 pip3 install pandas
-pip3 install pyarrow
 pip3 install matplotlib
 pip3 install PyQt5
 ```
