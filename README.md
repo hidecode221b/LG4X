@@ -4,7 +4,7 @@
 
 ## Preface
 The extended version (LG4X-V2) is available from [here](https://github.com/Julian-Hochhaus/LG4X-V2) upgraded by [Julian Hochhaus](https://github.com/Julian-Hochhaus/). 
-Furthermore, the advanced version (LG4X-V3) is available from [exe](https://sourceforge.net/projects/khervefitting/) or [source](https://github.com/KherveFitting/KherveFitting/) developed by [Gwilherm Kerherve](https://www.linkedin.com/in/gwilherm-kerherve-3588b978/).
+Furthermore, the advanced version (LG4X-V3) is available from [binary](https://khervefitting.sourceforge.io/) or [github](https://github.com/KherveFitting/KherveFitting/) developed by [Gwilherm Kerherve](https://www.linkedin.com/in/gwilherm-kerherve-3588b978/).
 After the WFH period under the covid situation, I have no time to develop further this code (28 Mar. 2023).
 
 
